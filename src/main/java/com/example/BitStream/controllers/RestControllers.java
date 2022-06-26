@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.BitStream.models.Video;
@@ -23,8 +24,9 @@ import com.example.BitStream.service.UserListService;
 import com.example.BitStream.service.VideoService;
 import com.example.BitStream.serviceImp.VideoServiceImpl;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/rest")
+@RequestMapping("/api/test")
 public class RestControllers {
 	
 	@Autowired

@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import  { BrowserRouter, HashRouter, Switch, Route } from "react-router-dom";
 
-import UserService from "../services/user.service";
-import EventBus from "../common/EventBus";
+import UserService from "../../services/user.service";
+import EventBus from "../../common/EventBus";
+import List from "../UI/List";
+import uploadList from "../UI/UploadList";
 
-export default class BoardModerator extends Component {
+
+export default class BoardUser extends Component {
   constructor(props) {
     super(props);
 
@@ -13,7 +17,7 @@ export default class BoardModerator extends Component {
   }
 
   componentDidMount() {
-    UserService.getModeratorBoard().then(
+    UserService.getUserBoard().then(
       response => {
         this.setState({
           content: response.data
@@ -40,8 +44,16 @@ export default class BoardModerator extends Component {
     return (
       <div className="container">
         <header className="jumbotron">
-          <h3>{this.state.content}</h3>
-        </header>
+        <HashRouter>
+        <List></List>
+            <div className="content">
+            <Switch>
+                        <Route path="/MyVideos" component={uploadList}/>
+                        <Route path="/FavouriteList"/>
+             </Switch>                
+            </div>
+            </HashRouter>
+        </header>        
       </div>
     );
   }

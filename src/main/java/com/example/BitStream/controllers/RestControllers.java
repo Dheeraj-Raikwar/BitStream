@@ -26,7 +26,7 @@ import com.example.BitStream.serviceImp.VideoServiceImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/rest")
 public class RestControllers {
 	
 	@Autowired
@@ -44,7 +44,7 @@ public class RestControllers {
 	@Autowired
 	private VideoService videoService;
 
-	@GetMapping("/user/uploadlist")
+	@GetMapping("/uploadlist")
     public ResponseEntity<?> getuploadlist(@AuthenticationPrincipal UserDetailsImpl user) {
 	
 		long userId = user.getId();

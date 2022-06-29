@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 
-const api_url = 'http://localhost:8080/api/test/user/uploadlist';
+const api_url = 'http://localhost:8080/api/rest/uploadlist';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let api_token;

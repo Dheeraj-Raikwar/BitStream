@@ -5,6 +5,7 @@ import UserService from "../../services/user.service";
 import EventBus from "../../common/EventBus";
 import List from "../UI/List";
 import uploadList from "../UI/UploadList";
+import uploadFile from "../UI/UploadFileCom";
 
 
 export default class BoardUser extends Component {
@@ -48,12 +49,12 @@ export default class BoardUser extends Component {
         <List></List>
             <div className="content">
             <Switch>
-                        <Route path="/MyVideos" component={uploadList}/>
+                        <Route path="/MyVideos" component={uploadFile}/>
                         <Route path="/FavouriteList"/>
              </Switch>                
             </div>
             </HashRouter>
-        </header>        
+        </header>   
       </div>
     );
   }

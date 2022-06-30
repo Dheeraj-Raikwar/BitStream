@@ -3,9 +3,10 @@ import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 
-const api_url = 'http://localhost:8080/api/rest/uploadlist';
+const api_url = 'http://localhost:8080/api/videoFile/files/baeldung.jpeg';
 
 const user = JSON.parse(localStorage.getItem('user'));
+
 let api_token;
 if (user && user.accessToken) {
      api_token=user.accessToken;
@@ -14,7 +15,7 @@ if (user && user.accessToken) {
   
   }
 
-let data=[];
+let data="";
 function UploadList(){
 
    useEffect(() => {
@@ -26,6 +27,7 @@ function UploadList(){
   const getUploadList = async () => {
 
    try {
+
        let res = await axios({
             url: api_url,
             method: 'get',
@@ -35,10 +37,10 @@ function UploadList(){
         if(res.status === 200){
 
             console.log(res.status);
-        
-        }  
+            
+        }
 
-       data=await res.data;
+        data = await res.data;       
          
     }
     catch (err) {
@@ -59,8 +61,12 @@ function UploadList(){
     )
 */
 
+  //return data.map((video) => <li>{video.bytes}</li>);
 
-  return data.map((video) => <li>{video.title}</li>);
+
+  return data;
+
+  
 }
 
 export default UploadList;

@@ -1,12 +1,17 @@
 package com.example.BitStream.controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.stream.Collectors;
+import org.apache.commons.io.IOUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,7 +43,7 @@ public class VideoFileController {
 		this.storageService = storageService;
 	}
 
-	@GetMapping("/")
+	@GetMapping("/getupload")
 	public String listUploadedFiles(Model model) throws IOException {
 
 		model.addAttribute("files", storageService.loadAll().map(
@@ -51,11 +56,21 @@ public class VideoFileController {
 
 	@GetMapping("/files/{filename:.+}")
 	@ResponseBody
-	public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+	public <Option>MultipartFile serveFile(@PathVariable String filename) throws IOException {
 
 		Resource file = storageService.loadAsResource(filename);
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-				"attachment; filename=\"" + file.getFilename() + "\"").body(file);
+		
+		MultipartFile multipartFile = new MockMultipartFile("file",
+		            file.getFilename(), "image/jpeg, image/jpg, image/png, image/gif", IOUtils.toByteArray(file.getInputStream()));
+		
+		
+		/*
+		File file = new File("src/test/resources/input.txt");
+		FileInputStream input = new FileInputStream(file);
+		MultipartFile multipartFile = new MockMultipartFile("file",
+		            file.getName(), "text/plain", IOUtils.toByteArray(input));*/
+		
+		return multipartFile;
 	}
 
 	@PostMapping("/upload")

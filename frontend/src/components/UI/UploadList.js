@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 
-const api_url = 'http://localhost:8080/api/videoFile/files/baeldung.jpeg';
+const api_url = 'http://localhost:8080/api/upload/baeldung.jpeg';
 
 const user = JSON.parse(localStorage.getItem('user'));
 

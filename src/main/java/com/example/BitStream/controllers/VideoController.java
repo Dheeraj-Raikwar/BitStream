@@ -16,7 +16,7 @@ import com.example.BitStream.repository.VideoRepository;
 
 @RestController
 @RequestMapping("/api/video")
-public class VideosController {
+public class VideoController {
 	
 	@Autowired
 	private VideoRepository repository;

@@ -49,8 +49,8 @@ export default class BoardUser extends Component {
         <List></List>
             <div className="content">
             <Switch>
-                        <Route path="/MyVideos" component={uploadFile}/>
-                        <Route path="/FavouriteList"/>
+                        <Route path="/upload" component={uploadFile}/>
+                        <Route path="/uploadList" component={uploadList}/>
              </Switch>                
             </div>
             </HashRouter>

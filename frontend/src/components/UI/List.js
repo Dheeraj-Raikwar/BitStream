@@ -8,8 +8,8 @@ function List() {
             <h1></h1>
             <ul>
                
-                <li><NavLink to="/MyVideos">MyVideos</NavLink></li>
-                <li><NavLink to="/FavouriteList">FavouriteList</NavLink></li>
+                <li><NavLink to="/upload">Upload Video</NavLink></li>
+                <li><NavLink to="/uploadList">Your List</NavLink></li>
             </ul>
         </div>
     )

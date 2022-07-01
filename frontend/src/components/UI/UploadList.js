@@ -1,4 +1,4 @@
-import React,{useEffect } from "react";
+import React,{useEffect,useState } from "react";
 import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
@@ -15,14 +15,8 @@ if (user && user.accessToken) {
   
   }
 
-let data="";
+let data;
 function UploadList(){
-
-   useEffect(() => {
-
-    getUploadList();
-
-  }, []);
 
   const getUploadList = async () => {
 
@@ -37,16 +31,26 @@ function UploadList(){
         if(res.status === 200){
 
             console.log(res.status);
-            
         }
 
-        data = await res.data;       
-         
+        data=res.data;
+
+
+
     }
     catch (err) {
         console.error(err);
     }
+
+
 };
+
+useEffect(() => {
+
+    getUploadList();
+
+  }, []);
+
 
  /*uploadlist=data.map(
         (video)=>{
@@ -62,9 +66,15 @@ function UploadList(){
 */
 
   //return data.map((video) => <li>{video.bytes}</li>);
+   
 
+  return <div>
 
-  return data;
+  <img src={"data:image/jpeg;base64," + data} alt="Fetching Image..." height={200} width={200}/>
+
+  <img src="http://localhost:8080/api/videoFile/files/baeldung.jpeg" alt="Fetching Image..." height={200} width={200}/>
+
+  </div>;
 
   
 }

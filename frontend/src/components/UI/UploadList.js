@@ -1,9 +1,12 @@
-import React,{useEffect,useState } from "react";
-import { Redirect } from "react-router-dom";
+import React,{ Component,useRef, useState, } from "react";
+import {Card, CardGroup} from 'react-bootstrap';
+import { Redirect, Link } from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
+const baseURL = "http://localhost:8080/api/upload";
 
-const api_url = 'http://localhost:8080/api/upload/baeldung.jpeg';
+
+
 
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -13,17 +16,22 @@ if (user && user.accessToken) {
   } else {
     api_token="";
   
-  }
+}
 
-let data;
-function UploadList(){
+class UploadList extends Component {
 
-  const getUploadList = async () => {
+    constructor(props) {
+        super(props);
+        this.state = {videos: []};
+    }
 
-   try {
+    async componentDidMount() {
+
+        try 
+        {
 
        let res = await axios({
-            url: api_url,
+            url: baseURL,
             method: 'get',
             timeout: 8000,
             headers: { Authorization: 'Bearer ' + api_token}
@@ -33,50 +41,48 @@ function UploadList(){
             console.log(res.status);
         }
 
-        data=res.data;
+        const data= res.data;
 
+        this.setState({ videos: [...data] });
 
-
-    }
-    catch (err) {
-        console.error(err);
-    }
-
-
-};
-
-useEffect(() => {
-
-    getUploadList();
-
-  }, []);
-
-
- /*uploadlist=data.map(
-        (video)=>{
-            return(
-                <li>
-                    <p>{video.title}
-                    {video.category}
-                    {video.filename}</p>
-                </li>
-            )
         }
-    )
-*/
+        catch (err) {
+        console.error(err);
+        }
 
-  //return data.map((video) => <li>{video.bytes}</li>);
-   
+    }
 
-  return <div>
+    render(){
 
-  <img src={"data:image/jpeg;base64," + data} alt="Fetching Image..." height={200} width={200}/>
+        return( <div>
 
-  <img src="http://localhost:8080/api/videoFile/files/baeldung.jpeg" alt="Fetching Image..." height={200} width={200}/>
+            
+            <CardGroup>
 
-  </div>;
 
-  
+        {this.state.videos.map(
+        (video)=>
+                <Card style={{ width: '15rem' }} key={video.filename}>
+                    <Link to={'/player/{video.filename}'}>
+                    <Card.Img variant="top" src="holder.js/100px160" />
+                    <Card.Body>
+                        <Card.Title>{video.filename}
+                        </Card.Title>
+                        <Card.Text style={{width: '15rem'}, {overflow: 'hidden'}}>{video.url}
+                        </Card.Text>
+                    </Card.Body>
+                    <Card.Footer>
+                        <small className="text-muted">{video.size}</small>
+                    </Card.Footer>
+                    </Link>
+                 </Card>
+            )}
+            
+            </CardGroup>
+
+            </div>
+            )
+        
+    }
 }
-
 export default UploadList;

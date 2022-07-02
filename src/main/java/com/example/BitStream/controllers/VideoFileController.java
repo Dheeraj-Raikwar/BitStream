@@ -104,11 +104,17 @@ public class VideoFileController {
 
     @GetMapping("{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+    public ResponseEntity<String> getFile(@PathVariable String filename) throws IOException {
         Resource file = fileService.load(filename);
+        
+        byte[] arr =IOUtils.toByteArray(file.getInputStream());
+        String encodedString = Base64
+		          .getEncoder()
+		          .encodeToString(arr);
+        
         return ResponseEntity.ok()
                              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                             .body(file);
+                             .body(encodedString);
     }
 
 }

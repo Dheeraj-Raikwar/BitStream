@@ -4,8 +4,11 @@ import  { BrowserRouter, HashRouter, Switch, Route } from "react-router-dom";
 import UserService from "../../services/user.service";
 import EventBus from "../../common/EventBus";
 import List from "../UI/List";
-import uploadList from "../UI/UploadList";
+
 import uploadFile from "../UI/UploadFileCom";
+import getById from "../UI/GetById";
+import uploadList from "../UI/UploadList";
+import player from "../UI/Player";
 
 
 export default class BoardUser extends Component {
@@ -45,16 +48,25 @@ export default class BoardUser extends Component {
     return (
       <div className="container">
         <header className="jumbotron">
+        </header>
         <HashRouter>
         <List></List>
             <div className="content">
             <Switch>
                         <Route path="/upload" component={uploadFile}/>
+                        <Route path="/getById" component={getById}/>
                         <Route path="/uploadList" component={uploadList}/>
-             </Switch>                
-            </div>
+                        
+             </Switch>
+                            
+              </div>
             </HashRouter>
-        </header>   
+
+            <BrowserRouter>
+            <Switch>
+              <Route path="/player/:id" component={player}></Route>
+                </Switch>
+              </BrowserRouter>    
       </div>
     );
   }

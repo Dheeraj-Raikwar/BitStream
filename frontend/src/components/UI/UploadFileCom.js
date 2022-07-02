@@ -49,7 +49,7 @@ const UploadFile = () => {
             headers: { Authorization: 'Bearer ' + api_token},
             body: formData
         };
-        fetch(FILE_UPLOAD_BASE_ENDPOINT+'/upload', requestOptions)
+        fetch(FILE_UPLOAD_BASE_ENDPOINT, requestOptions)
             .then(async response => {
                 const isJson = response.headers.get('content-type')?.includes('application/json');
                 const data = isJson && await response.json();

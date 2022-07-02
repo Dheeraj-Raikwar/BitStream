@@ -34,7 +34,7 @@ const UploadFile = () => {
         const formData = new FormData();
 
         for (let i = 0; i < files.length; i++) {
-            if (files[i].size > 1024*1024){
+            if (files[i].size > 1024*1024*1024){
                 setFileSize(false);
                 setFileUploadProgress(false);
                 setFileUploadResponse(null);

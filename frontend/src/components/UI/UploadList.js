@@ -1,6 +1,6 @@
 import React,{ Component,useRef, useState, } from "react";
 import {Card, CardGroup} from 'react-bootstrap';
-import { Redirect, Link } from "react-router-dom";
+import { Redirect, NavLink} from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 const baseURL = "http://localhost:8080/api/upload";
@@ -38,7 +38,7 @@ class UploadList extends Component {
         })
         if(res.status === 200){
 
-            console.log(res.status);
+            console.log("Inside UploadList");
         }
 
         const data= res.data;
@@ -63,7 +63,7 @@ class UploadList extends Component {
         {this.state.videos.map(
         (video)=>
                 <Card style={{ width: '15rem' }} key={video.filename}>
-                    <Link to={'/player/{video.filename}'}>
+                    <NavLink to={`/player/${video.filename}`}>
                     <Card.Img variant="top" src="holder.js/100px160" />
                     <Card.Body>
                         <Card.Title>{video.filename}
@@ -74,7 +74,7 @@ class UploadList extends Component {
                     <Card.Footer>
                         <small className="text-muted">{video.size}</small>
                     </Card.Footer>
-                    </Link>
+                    </NavLink>
                  </Card>
             )}
             

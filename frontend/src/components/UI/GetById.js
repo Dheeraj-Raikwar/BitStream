@@ -16,7 +16,7 @@ if (user && user.accessToken) {
   }
 
 let data;
-let id='baeldung.jpeg'
+let id='Shenhe Leaks - Gameplay Animations - Genshin Impact 2.4.mp4'
 function GetById(){
 
   const getUploadList = async () => {
@@ -30,12 +30,9 @@ function GetById(){
             headers: { Authorization: 'Bearer ' + api_token}
         })
         if(res.status === 200){
-
-            console.log(res.status);
+            console.log("Inside Get By Id");
+            data=res.data;
         }
-
-        data=res.data;
-
     }
     catch (err) {
         console.error(err);
@@ -69,8 +66,8 @@ useEffect(() => {
 
   return <div>
 
-  <img src={"data:image/jpeg;base64," + data} alt="Fetching Image..." height={200} width={200}/>
-
+  <video controls muted autoPlay
+  src={"data:video/mp4;base64," + data}/>
   </div>;
 
   

@@ -56,17 +56,12 @@ export default class BoardUser extends Component {
                         <Route path="/upload" component={uploadFile}/>
                         <Route path="/getById" component={getById}/>
                         <Route path="/uploadList" component={uploadList}/>
+                        <Route path="/player/:id" component={player}/>
                         
              </Switch>
                             
               </div>
-            </HashRouter>
-
-            <BrowserRouter>
-            <Switch>
-              <Route path="/player/:id" component={player}></Route>
-                </Switch>
-              </BrowserRouter>    
+            </HashRouter>    
       </div>
     );
   }

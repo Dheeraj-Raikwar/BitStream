@@ -14,20 +14,17 @@ if (user && user.accessToken) {
   
   }
 
-let id='baeldung.jpeg'
-
 export default class Player extends Component {
     constructor(props) {
         super(props);
         this.state = {
             videoId: this.props.match.params.id,
-            videoData: ""
+            videoData: {}
         };
     }
     async componentDidMount() {
         try {
 
-        console.log(this.state.videoId);
        let res = await axios({
             url: api_url+'/'+ this.state.videoId,
             method: 'get',
@@ -36,14 +33,13 @@ export default class Player extends Component {
         })
 
         if(res.status === 200){
-            console.log(res.status);
+            console.log("Inside Player");
+            let data=res.data;
+            this.setState({ videoData: data });
+
         }
-        console.log(this.state.videoData);
 
-        let data=res.data;
-
-        this.setState({ videoData: data });
-
+        
         } catch (error) {
             console.log(error);
         }
@@ -53,9 +49,9 @@ export default class Player extends Component {
         return (
             <div>
                 <header>
-                    <img
-                        src={"data:image/jpeg;base64," + this.state.videoData} alt="Fetching Image..." height={200} width={200}/>
-                    <h1>{ this.state.videoData.name }</h1>
+                <video controls muted autoPlay
+  src={"data:video/mp4;base64," + this.state.videoData}/>
+                    <h1>{ this.state.videoId }</h1>
                 </header>
             </div>
         )

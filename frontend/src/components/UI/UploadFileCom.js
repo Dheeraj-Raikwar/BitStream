@@ -57,13 +57,13 @@ const UploadFile = () => {
                 // check for error response
                 if (!response.ok) {
                     // get error message
-                    const error = (data && data.message) || response.status;
-                    setFileUploadResponse(data.message);
+                    const error = (data && data.responseMessage) || response.status;
+                    setFileUploadResponse(data.responseMessage);
                     return Promise.reject(error);
                 }
 
-               console.log(data.message);
-               setFileUploadResponse(data.message);
+               console.log(data.responseMessage);
+               setFileUploadResponse(data.responseMessage);
             })
             .catch(error => {
                 console.error('Error while uploading file!', error);

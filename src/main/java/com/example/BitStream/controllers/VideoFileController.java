@@ -53,9 +53,7 @@ import com.example.BitStream.serviceImp.FileService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/upload")
 public class VideoFileController {
-	
-	
-		
+			
 	@Autowired
 	UserRepository userRepository;
 	
@@ -80,28 +78,35 @@ public class VideoFileController {
 
     @PostMapping
     public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file) {
-        try {
-        	
-        	long userId = user.getId();
-        	
-        	long randomId = generateId();
-        	
-        	Video newVideo = new Video(randomId,"title","category",file.getOriginalFilename());
-        	
-        	videoService.saveById(newVideo,userId,randomId);
-        	        	
+        
+    	long userId = user.getId();    	
+    	long randomId = generateId();
+    	boolean safe=true;
+    	
+    	try {
+        	// Write file in local storage
             fileService.save(file);
 
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(new UploadResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
         } catch (Exception e) {
+        	safe=false;
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                                  .body(new UploadResponseMessage("Could not upload the file: " + file.getOriginalFilename() + "!"));
         }
-    }
-
-    
-    
+    	finally{
+    		
+    		// Update in DB if safe 
+    		if(safe) {
+    			
+    			Video newVideo = new Video(randomId,"title","category",file.getOriginalFilename());            	
+            	videoService.saveById(newVideo,userId,randomId);
+            	
+    		}
+    			
+    	}
+    	
+    }    
     
     @GetMapping
     public ResponseEntity<List<FileData>> getListFiles() {

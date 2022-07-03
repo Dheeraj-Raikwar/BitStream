@@ -21,7 +21,13 @@ public class Video {
 		this.title=title;
 		this.category=category;
 		this.filename=filename;
-	}	
+	}
+	
+	
+
+	public long getId() {
+		return id;
+	}
 
 	public String getTitle() {
 		return title;

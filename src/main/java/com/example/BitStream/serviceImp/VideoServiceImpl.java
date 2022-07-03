@@ -72,7 +72,7 @@ public class VideoServiceImpl implements VideoService{
 	@Override
 	public void saveById(Video video, Long userId, Long randomId) {
 		
-		videoRepository.save(video);
+		videoRepository.saveWithId(randomId,video.getTitle(),video.getCategory(),video.getFilename());
 		
 		long ui = userListRepository.findByUserId(userId); //user_list id
 		

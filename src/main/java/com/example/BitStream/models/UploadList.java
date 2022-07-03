@@ -28,7 +28,7 @@ import lombok.Setter;
 public class UploadList {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "upload_id")
 	private Long id;
 	

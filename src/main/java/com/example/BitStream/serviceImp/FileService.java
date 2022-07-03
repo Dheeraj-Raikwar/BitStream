@@ -33,13 +33,16 @@ public class FileService {
         }
     }
 
-    public void save(MultipartFile file) {
+    public void save(MultipartFile file, String filename) {
         try {
             Path root = Paths.get(uploadPath);
             if (!Files.exists(root)) {
                 init();
             }
-            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+            String original =file.getOriginalFilename();
+            int start=file.getOriginalFilename().lastIndexOf(".");
+            String extension =original.substring(start);
+            Files.copy(file.getInputStream(), root.resolve(filename+extension));
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }

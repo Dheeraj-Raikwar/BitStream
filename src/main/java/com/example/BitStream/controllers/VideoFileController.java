@@ -11,6 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class VideoFileController {
     	
     	try {
         	// Write file in local storage
-            fileService.save(file);
+            fileService.save(file,Long.toString(randomId));
 
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(new UploadResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
@@ -109,14 +110,25 @@ public class VideoFileController {
     }    
     
     @GetMapping
-    public ResponseEntity<List<FileData>> getListFiles() {
+    public ResponseEntity<List<Video>> getListFiles() {
         List<FileData> fileInfos = fileService.loadAll()
                                               .stream()
                                               .map(this::pathToFileData)
                                               .collect(Collectors.toList());
+        
+        List<Video> videolist = new ArrayList<Video>();
+        
+        for(FileData file:fileInfos) {
+        	
+        	Optional<Video> video  = videoService.findById(Long.parseLong(file.getFilename()));
+			video.ifPresent(videos -> {
+				videolist.add(videos);    
+			});
+    
+        }        
 
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(fileInfos);
+                             .body(videolist);
     }
 
     @DeleteMapping

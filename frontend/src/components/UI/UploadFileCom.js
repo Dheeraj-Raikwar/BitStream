@@ -12,6 +12,10 @@ if (user && user.accessToken) {
 
 const UploadFile = () => {
     const [files, setFiles] = useState('');
+    const [title, setitle] = useState('');
+    const [category, setCategory] = useState('');
+    const [filename, setFilename] = useState('');
+
     //state for checking file size
     const [fileSize, setFileSize] = useState(true);
     // for file upload progress message
@@ -25,6 +29,20 @@ const UploadFile = () => {
         setFiles(event.target.files);
        };
 
+    const uploadtitleHandler = (event) => {
+        setitle(event.target.value);
+                
+       };
+
+    const uploadcategoryHandler = (event) => {
+        setCategory(event.target.value);
+                
+       };
+
+    const uploadFilenameHandler = (event) => {
+        setFilename(event.target.value);         
+       };
+
       const fileSubmitHandler = (event) => {
        event.preventDefault();
        setFileSize(true);
@@ -33,16 +51,17 @@ const UploadFile = () => {
 
         const formData = new FormData();
 
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].size > 1024*1024*1024){
+            if (files[0].size > 1024*1024*1024){
                 setFileSize(false);
                 setFileUploadProgress(false);
                 setFileUploadResponse(null);
                 return;
             }
 
-            formData.append('file', files[i])
-        }
+            formData.append('file', files[0])
+            formData.append('title', title)
+            formData.append('category', category)
+            formData.append('filename', filename)  
 
         const requestOptions = {
             method: 'POST',
@@ -75,6 +94,9 @@ const UploadFile = () => {
 
       <form onSubmit={fileSubmitHandler}>
          <input type="file"  multiple onChange={uploadFileHandler}/>
+         <input type="text" onChange={uploadtitleHandler}/>
+         <input type="text" onChange={uploadcategoryHandler}/>
+         <input type="text" onChange={uploadFilenameHandler}/>
          <button type='submit'>Upload</button>
          {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}
          {fileUploadProgress && <p style={{color:'red'}}>Uploading File(s)</p>}

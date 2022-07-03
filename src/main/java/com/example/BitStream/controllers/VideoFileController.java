@@ -78,7 +78,8 @@ public class VideoFileController {
     }
 
     @PostMapping
-    public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file,
+    		@RequestParam("title") String title,@RequestParam("category") String category,@RequestParam("filename") String filename) {
         
     	long userId = user.getId();    	
     	long randomId = generateId();
@@ -120,7 +121,11 @@ public class VideoFileController {
         
         for(FileData file:fileInfos) {
         	
-        	Optional<Video> video  = videoService.findById(Long.parseLong(file.getFilename()));
+        	String original = file.getFilename();
+            int end = original.lastIndexOf(".");
+            String name = original.substring(0,end);
+        	
+        	Optional<Video> video  = videoService.findById(Long.parseLong(name)); //name in storage is id in Db
 			video.ifPresent(videos -> {
 				videolist.add(videos);    
 			});

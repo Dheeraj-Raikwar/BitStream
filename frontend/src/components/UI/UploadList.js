@@ -5,9 +5,6 @@ import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 const baseURL = "http://localhost:8080/api/upload";
 
-
-
-
 const user = JSON.parse(localStorage.getItem('user'));
 
 let api_token;
@@ -62,17 +59,17 @@ class UploadList extends Component {
 
         {this.state.videos.map(
         (video)=>
-                <Card style={{ width: '15rem' }} key={video.filename}>
-                    <NavLink to={`/player/${video.filename}`}>
+                <Card style={{ width: '15rem' }} key={video.id}>
+                    <NavLink to={`/player/${video.id}`}>
                     <Card.Img variant="top" src="holder.js/100px160" />
                     <Card.Body>
-                        <Card.Title>{video.filename}
+                        <Card.Title>{video.title}
                         </Card.Title>
-                        <Card.Text style={{width: '15rem'}, {overflow: 'hidden'}}>{video.url}
+                        <Card.Text style={{width: '15rem'}, {overflow: 'hidden'}}>{video.category}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>
-                        <small className="text-muted">{video.size}</small>
+                        <small className="text-muted">{video.filename}</small>
                     </Card.Footer>
                     </NavLink>
                  </Card>

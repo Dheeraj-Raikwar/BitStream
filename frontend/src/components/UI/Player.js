@@ -26,7 +26,7 @@ export default class Player extends Component {
         try {
 
        let res = await axios({
-            url: api_url+'/'+ this.state.videoId,
+            url: api_url+'/'+ this.state.videoId +'.mp4',
             method: 'get',
             timeout: 8000,
             headers: { Authorization: 'Bearer ' + api_token}
@@ -38,7 +38,6 @@ export default class Player extends Component {
             this.setState({ videoData: data });
 
         }
-
         
         } catch (error) {
             console.log(error);

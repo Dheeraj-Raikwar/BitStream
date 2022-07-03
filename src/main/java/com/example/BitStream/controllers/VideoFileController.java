@@ -79,7 +79,7 @@ public class VideoFileController {
 
     @PostMapping
     public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file,
-    		@RequestParam("title") String title,@RequestParam("category") String category,@RequestParam("filename") String filename) {
+    		@RequestParam("title") String title,@RequestParam("category") String category) {
         
     	long userId = user.getId();    	
     	long randomId = generateId();
@@ -101,7 +101,7 @@ public class VideoFileController {
     		// Update in DB if safe 
     		if(safe) {
     			
-    			Video newVideo = new Video(randomId,"title","category",file.getOriginalFilename());            	
+    			Video newVideo = new Video(randomId,title,category,file.getOriginalFilename());            	
             	videoService.saveById(newVideo,userId,randomId);
             	
     		}

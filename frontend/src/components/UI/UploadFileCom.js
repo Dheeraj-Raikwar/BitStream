@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import {DropdownButton} from 'react-bootstrap';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let api_token;
@@ -14,7 +15,6 @@ const UploadFile = () => {
     const [files, setFiles] = useState('');
     const [title, setitle] = useState('');
     const [category, setCategory] = useState('');
-    const [filename, setFilename] = useState('');
 
     //state for checking file size
     const [fileSize, setFileSize] = useState(true);
@@ -39,10 +39,6 @@ const UploadFile = () => {
                 
        };
 
-    const uploadFilenameHandler = (event) => {
-        setFilename(event.target.value);         
-       };
-
       const fileSubmitHandler = (event) => {
        event.preventDefault();
        setFileSize(true);
@@ -61,8 +57,6 @@ const UploadFile = () => {
             formData.append('file', files[0])
             formData.append('title', title)
             formData.append('category', category)
-            formData.append('filename', filename)  
-
         const requestOptions = {
             method: 'POST',
             headers: { Authorization: 'Bearer ' + api_token},
@@ -96,7 +90,6 @@ const UploadFile = () => {
          <input type="file"  multiple onChange={uploadFileHandler}/>
          <input type="text" onChange={uploadtitleHandler}/>
          <input type="text" onChange={uploadcategoryHandler}/>
-         <input type="text" onChange={uploadFilenameHandler}/>
          <button type='submit'>Upload</button>
          {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}
          {fileUploadProgress && <p style={{color:'red'}}>Uploading File(s)</p>}

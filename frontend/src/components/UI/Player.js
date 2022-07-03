@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
+import {Ratio} from 'react-bootstrap';
 
 const api_url = 'http://localhost:8080/api/upload';
 
@@ -47,11 +48,14 @@ export default class Player extends Component {
     render() {
         return (
             <div>
-                <header>
-                <video controls muted autoPlay
-  src={"data:video/mp4;base64," + this.state.videoData}/>
-                    <h1>{ this.state.videoId }</h1>
-                </header>
+                <div style={{ width: 660, height: 'auto' }}>
+                    <Ratio aspectRatio="16x9">
+                    <video controls muted autoPlay
+                    src={"data:video/mp4;base64," + this.state.videoData}/>
+                    
+                    </Ratio>
+                </div>
+                <h1>{ this.state.videoId }</h1>
             </div>
         )
     }

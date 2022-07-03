@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import {Form} from 'react-bootstrap';
+import {Form,Row,Col,Button} from 'react-bootstrap';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let api_token;
@@ -86,24 +86,34 @@ const UploadFile = () => {
 
     return(
 
-      <form onSubmit={fileSubmitHandler}>
-         <input type="file"  multiple onChange={uploadFileHandler}/>
+      <Form onSubmit={fileSubmitHandler}>
 
-
-        <Form.Select aria-label="Default select example" onChange={uploadtitleHandler}>
+        <Row>
+         <Col>
+         <Form.Control input type="file"  multiple onChange={uploadFileHandler}/>
+         </Col>
+         <Col>
+         <Form.Control placeholder="Enter Title" input type="text" onChange={uploadtitleHandler}/>
+         </Col>
+         <Col> 
+        <Form.Select aria-label="Default select example" onChange={uploadcategoryHandler}>
             <option>Choose Category</option>
             <option value="Movie">Movie</option>
             <option value="Music">Music</option>
+            <option value="Game">Game</option>
             <option value="Tutorial">Tutorial</option>
+            <option value="Life Hacks">Life Hacks</option>
             <option value="Other">Other</option>
         </Form.Select>
-
-         <input type="text" onChange={uploadcategoryHandler}/>
-         <button type='submit'>Upload</button>
+        </Col>
+        <Col>
+         <Button variant="primary" type="submit">Upload</Button>
+         </Col>
+         </Row>
          {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}
          {fileUploadProgress && <p style={{color:'red'}}>Uploading File(s)</p>}
         {fileUploadResponse!=null && <p style={{color:'green'}}>{fileUploadResponse}</p>}
-      </form>
+      </Form>
 
     );
 }

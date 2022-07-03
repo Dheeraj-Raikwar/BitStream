@@ -61,7 +61,7 @@ class UploadList extends Component {
         (video)=>
                 <Card style={{ width: '15rem' }} key={video.id}>
                     <NavLink to={`/player/${video.id}`}>
-                    <Card.Img variant="top" src="holder.js/100px160" />
+                    <Card.Img variant="top" src="https://wallpapercave.com/wp/wp10269891.jpg" />
                     <Card.Body>
                         <Card.Title>{video.title}
                         </Card.Title>

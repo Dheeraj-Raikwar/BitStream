@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import {DropdownButton} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 
 const user = JSON.parse(localStorage.getItem('user'));
 let api_token;
@@ -88,7 +88,16 @@ const UploadFile = () => {
 
       <form onSubmit={fileSubmitHandler}>
          <input type="file"  multiple onChange={uploadFileHandler}/>
-         <input type="text" onChange={uploadtitleHandler}/>
+
+
+        <Form.Select aria-label="Default select example" onChange={uploadtitleHandler}>
+            <option>Choose Category</option>
+            <option value="Movie">Movie</option>
+            <option value="Music">Music</option>
+            <option value="Tutorial">Tutorial</option>
+            <option value="Other">Other</option>
+        </Form.Select>
+
          <input type="text" onChange={uploadcategoryHandler}/>
          <button type='submit'>Upload</button>
          {!fileSize && <p style={{color:'red'}}>File size exceeded!!</p>}

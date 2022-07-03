@@ -41,4 +41,11 @@ public class UploadListServiceImpl implements UploadListService{
 		return uploadListRepository.findVideoUserListId(id);
 	}
 
+	@Override
+	public void addNew(Long userlist, long videoid) {
+		
+		uploadListRepository.addNew(userlist, videoid);
+		
+	}
+
 }

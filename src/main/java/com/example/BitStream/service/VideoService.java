@@ -16,6 +16,6 @@ public interface VideoService {
    
     List<Video> filter(String category);
 
-    Video save(Video video);
+    void saveById(Video video, Long userId, Long randomId);
 
 }

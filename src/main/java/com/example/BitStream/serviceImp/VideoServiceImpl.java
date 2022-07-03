@@ -70,9 +70,16 @@ public class VideoServiceImpl implements VideoService{
 	}
 
 	@Override
-	public Video save(Video video) {
+	public void saveById(Video video, Long userId, Long randomId) {
 		
-		return null;
+		videoRepository.save(video);
+		
+		long ui = userListRepository.findByUserId(userId); //user_list id
+		
+		uploadListRepository.addNew(ui,randomId);
+		
+		
 	}
+
 
 }

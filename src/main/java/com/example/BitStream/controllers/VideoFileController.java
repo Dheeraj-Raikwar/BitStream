@@ -1,13 +1,14 @@
 package com.example.BitStream.controllers;
 
-import com.example.BitStream.serviceImp.FileService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,16 +41,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.BitStream.controllers.VideoFileController;
 import com.example.BitStream.models.FileData;
 import com.example.BitStream.models.UploadResponseMessage;
-
+import com.example.BitStream.models.Video;
+import com.example.BitStream.repository.UserRepository;
+import com.example.BitStream.security.services.UserDetailsImpl;
+import com.example.BitStream.service.UploadListService;
+import com.example.BitStream.service.UserListService;
+import com.example.BitStream.service.VideoService;
+import com.example.BitStream.serviceImp.FileService;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/upload")
 public class VideoFileController {
 	
-	private final static Logger log = LoggerFactory.getLogger(VideoFileController.class);
 	
+		
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	UserListService userListService;
+	
+	@Autowired
+	UploadListService uploadListService;
+	
+	@Autowired
+	private VideoService videoService;
+
 	private final FileService fileService;
+	
+	
+	private final static Logger log = LoggerFactory.getLogger(VideoFileController.class);
 
     @Autowired
     public VideoFileController(FileService fileService) {
@@ -56,8 +79,17 @@ public class VideoFileController {
     }
 
     @PostMapping
-    public ResponseEntity<UploadResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file) {
         try {
+        	
+        	long userId = user.getId();
+        	
+        	long randomId = generateId();
+        	
+        	Video newVideo = new Video(randomId,"title","category",file.getOriginalFilename());
+        	
+        	videoService.saveById(newVideo,userId,randomId);
+        	        	
             fileService.save(file);
 
             return ResponseEntity.status(HttpStatus.OK)
@@ -68,6 +100,9 @@ public class VideoFileController {
         }
     }
 
+    
+    
+    
     @GetMapping
     public ResponseEntity<List<FileData>> getListFiles() {
         List<FileData> fileInfos = fileService.loadAll()
@@ -116,5 +151,21 @@ public class VideoFileController {
                              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                              .body(encodedString);
     }
+    
+    
+    
+    /*Generate random id for storing videos*/
+     
+    public long generateId() {
+    	
+    	Date dNow = new Date();    	
+        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+        String datetime = ft.format(dNow);               
+                
+        return Long.parseLong(datetime)+9L + (long)(Math.random()*(9L - 1L));
+
+      }
+    
+    
 
 }

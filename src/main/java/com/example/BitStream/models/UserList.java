@@ -33,7 +33,6 @@ public class UserList {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-	
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="userList")
 	 private List<UploadList> uploadlist;

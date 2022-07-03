@@ -15,15 +15,14 @@ public class Video {
 	
 	public Video() {}
 	
-	public Video(String title, String category, String filename) {		
+	public Video(long id, String title, String category,String filename) {		
 		super();
+		this.id=id;
 		this.title=title;
 		this.category=category;
 		this.filename=filename;
-		
-		
-	}
-	
+	}	
+
 	public String getTitle() {
 		return title;
 	}
@@ -43,10 +42,11 @@ public class Video {
 	public String getFilename() {
 		return filename;
 	}
-	
+
 	public void setFilename(String filename) {
-		this.filename=filename;
+		this.filename = filename;
 	}
+	
 	
 	
 	@OneToOne(fetch = FetchType.LAZY)

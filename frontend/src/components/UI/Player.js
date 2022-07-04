@@ -3,17 +3,8 @@ import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
 import {Ratio} from 'react-bootstrap';
 
-const api_url = 'http://localhost:8080/api/upload';
+const api_url = 'http://localhost:8080/api/rest/get';
 
-const user = JSON.parse(localStorage.getItem('user'));
-
-let api_token;
-if (user && user.accessToken) {
-     api_token=user.accessToken;
-  } else {
-    api_token="";
-  
-  }
 
 export default class Player extends Component {
     constructor(props) {
@@ -29,8 +20,7 @@ export default class Player extends Component {
        let res = await axios({
             url: api_url+'/'+ this.state.videoId +'.mp4',
             method: 'get',
-            timeout: 8000,
-            headers: { Authorization: 'Bearer ' + api_token}
+            timeout: 8000
         })
 
         if(res.status === 200){

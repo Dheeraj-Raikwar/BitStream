@@ -23,7 +23,7 @@ const UploadFile = () => {
     //for displaying response message
     const [fileUploadResponse, setFileUploadResponse] = useState(null);
     //base end point url
-    const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/api/upload";
+    const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/api/rest/user/upload";
 
     const uploadFileHandler = (event) => {
         setFiles(event.target.files);

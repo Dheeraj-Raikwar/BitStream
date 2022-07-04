@@ -3,7 +3,7 @@ import {Card, CardGroup} from 'react-bootstrap';
 import { Redirect, NavLink} from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
-const baseURL = "http://localhost:8080/api/upload";
+const baseURL = "http://localhost:8080/api/rest/user/mylist";
 
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -15,7 +15,7 @@ if (user && user.accessToken) {
   
 }
 
-class UploadList extends Component {
+class MyList extends Component {
 
     constructor(props) {
         super(props);
@@ -82,4 +82,4 @@ class UploadList extends Component {
         
     }
 }
-export default UploadList;
+export default MyList;

@@ -3,13 +3,12 @@ import  { BrowserRouter, HashRouter, Switch, Route } from "react-router-dom";
 
 import UserService from "../../services/user.service";
 import EventBus from "../../common/EventBus";
-import List from "../UI/List";
+import UserList from "../UI/UserList";
 
-import uploadFile from "../UI/UploadFileCom";
+import uploadVideo from "../UI/UploadVideo";
 import getById from "../UI/GetById";
-import uploadList from "../UI/UploadList";
+import myList from "../UI/MyList";
 import player from "../UI/Player";
-
 
 export default class BoardUser extends Component {
   constructor(props) {
@@ -50,14 +49,13 @@ export default class BoardUser extends Component {
         <header className="jumbotron">
         </header>
         <HashRouter>
-        <List></List>
+        <UserList></UserList>
             <div className="content">
             <Switch>
-                        <Route path="/upload" component={uploadFile}/>
+                        <Route path="/upload" component={uploadVideo}/>
                         <Route path="/getById" component={getById}/>
-                        <Route path="/uploadList" component={uploadList}/>
-                        <Route path="/player/:id" component={player}/>
-                        
+                        <Route path="/myList" component={myList}/>                        
+                        <Route path="/player/:id" component={player}/>                        
              </Switch>
                             
               </div>

@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,7 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.BitStream.controllers.VideoFileController;
+import com.example.BitStream.controllers.UserController;
 import com.example.BitStream.models.FileData;
 import com.example.BitStream.models.UploadResponseMessage;
 import com.example.BitStream.models.Video;
@@ -52,10 +53,10 @@ import com.example.BitStream.service.UserListService;
 import com.example.BitStream.service.VideoService;
 import com.example.BitStream.serviceImp.FileService;
 
-@RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/api/upload")
-public class VideoFileController {
+@RestController
+@RequestMapping("/api/rest")
+public class UserController {
 			
 	@Autowired
 	UserRepository userRepository;
@@ -74,14 +75,15 @@ public class VideoFileController {
 	@Value("${upload.path}")
     private String uploadPath;
 		
-	private final static Logger log = LoggerFactory.getLogger(VideoFileController.class);
+	private final static Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public VideoFileController(FileService fileService) {
+    public UserController(FileService fileService) {
         this.fileService = fileService;
     }
 
-    @PostMapping
+    @PostMapping("/user/upload")
+	@PreAuthorize("hasRole('USER')")
     public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file,
     		@RequestParam("title") String title,@RequestParam("category") String category) {
         
@@ -96,14 +98,15 @@ public class VideoFileController {
             return ResponseEntity.status(HttpStatus.OK)
                                  .body(new UploadResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
         } catch (Exception e) {
-        	safe=false;
+        	
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                                  .body(new UploadResponseMessage("Could not upload the file: " + file.getOriginalFilename() + "!"));
         }
-    	finally{
+    	
+    		finally{
     		
-    		// Update in DB if safe 
-    		if(safe) {
+    			// Update in DB if safe 
+    			if(safe) {
     			
     			Video newVideo = new Video(randomId,title,category,file.getOriginalFilename());            	
             	videoService.saveById(newVideo,userId,randomId);
@@ -111,10 +114,13 @@ public class VideoFileController {
     		}
     			
     	}
-    	
-    }    
+            	
+    		
+    			
+    	}
+    	    
     
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Video>> getListFiles() {
         List<FileData> fileInfos = fileService.loadAll()
                                               .stream()
@@ -123,8 +129,9 @@ public class VideoFileController {
         
         List<Video> videolist = new ArrayList<Video>();
         
-        for(FileData file:fileInfos) {
+        try {
         	
+        for(FileData file:fileInfos) {        	
         	String original = file.getFilename();
             int end = original.lastIndexOf(".");
             String name = original.substring(0,end);
@@ -134,31 +141,45 @@ public class VideoFileController {
 				videolist.add(videos);    
 			});
     
-        }        
+        }
+        
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                                 .body(videolist);
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(videolist);
+                .body(videolist);
     }
     
     
-    @GetMapping("/mylist")
+    @GetMapping("/user/mylist")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<Video>> getListFiles(@AuthenticationPrincipal UserDetailsImpl user) {
     	
     	List<Video> videolist = videoService.findbyuser(user.getId());
     	
-    	List<FileData> fileInfos = new ArrayList<>();
+    	List<FileData> fileInfos = new ArrayList<FileData>();
     	
-    	for(Video videos:videolist) {
+    	 try {
+    	
+    	for(Video videos:videolist) {   		
     		Path path = Paths.get(uploadPath)
-                    .resolve(videos.getFilename());
+                    .resolve(Long.toString(videos.getId())+".mp4");
     		fileInfos.add(pathToFileData(path));
     	}
         
+    	 } catch (Exception e) {
+             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                     .body(videolist);
+    	 }
+    	 
         return ResponseEntity.status(HttpStatus.OK)
                              .body(videolist);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/user/delete")
+    @PreAuthorize("hasRole('USER')")    
     public void delete() {
         fileService.deleteAll();
     }    
@@ -168,7 +189,7 @@ public class VideoFileController {
         String filename = path.getFileName()
                               .toString();
         fileData.setFilename(filename);
-        fileData.setUrl(MvcUriComponentsBuilder.fromMethodName(VideoFileController.class, "getFile", filename)
+        fileData.setUrl(MvcUriComponentsBuilder.fromMethodName(UserController.class, "getFile", filename)
                                                .build()
                                                .toString());
         try {
@@ -181,7 +202,7 @@ public class VideoFileController {
         return fileData;
     }
 
-    @GetMapping("{filename:.+}")
+    @GetMapping("/get/{filename:.+}")
     @ResponseBody
     public ResponseEntity<String> getFile(@PathVariable String filename) throws IOException {
         Resource file = fileService.load(filename);

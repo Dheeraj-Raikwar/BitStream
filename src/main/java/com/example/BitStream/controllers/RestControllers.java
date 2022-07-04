@@ -60,8 +60,10 @@ public class RestControllers {
 		
 		List<Video> videos = new ArrayList<Video>();
        try {
+    	   
 		videos = videoService.findbyuser(userId);
         return new ResponseEntity<>(videos, HttpStatus.OK);
+       
        }
        catch(Exception e){
     	   return new ResponseEntity<>("No Videos Found.", HttpStatus.OK);

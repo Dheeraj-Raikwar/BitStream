@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -17,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -69,7 +71,9 @@ public class VideoFileController {
 
 	private final FileService fileService;
 	
-	
+	@Value("${upload.path}")
+    private String uploadPath;
+		
 	private final static Logger log = LoggerFactory.getLogger(VideoFileController.class);
 
     @Autowired
@@ -135,11 +139,29 @@ public class VideoFileController {
         return ResponseEntity.status(HttpStatus.OK)
                              .body(videolist);
     }
+    
+    
+    @GetMapping("/mylist")
+    public ResponseEntity<List<Video>> getListFiles(@AuthenticationPrincipal UserDetailsImpl user) {
+    	
+    	List<Video> videolist = videoService.findbyuser(user.getId());
+    	
+    	List<FileData> fileInfos = new ArrayList<>();
+    	
+    	for(Video videos:videolist) {
+    		Path path = Paths.get(uploadPath)
+                    .resolve(videos.getFilename());
+    		fileInfos.add(pathToFileData(path));
+    	}
+        
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(videolist);
+    }
 
     @DeleteMapping
     public void delete() {
         fileService.deleteAll();
-    }
+    }    
 
     private FileData pathToFileData(Path path) {
         FileData fileData = new FileData();

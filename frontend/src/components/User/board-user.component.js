@@ -55,7 +55,7 @@ export default class BoardUser extends Component {
                         <Route path="/upload" component={uploadVideo}/>
                         <Route path="/getById" component={getById}/>
                         <Route path="/myList" component={myList}/>                        
-                        <Route path="/player/:id" component={player}/>                        
+                        <Route path="/player/:id/:name" component={player}/>                        
              </Switch>
                             
               </div>

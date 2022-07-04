@@ -11,6 +11,7 @@ export default class Player extends Component {
         super(props);
         this.state = {
             videoId: this.props.match.params.id,
+            videoName: this.props.match.params.name,
             videoData: {}
         };
     }
@@ -45,7 +46,7 @@ export default class Player extends Component {
                     
                     </Ratio>
                 </div>
-                <h1>{ this.state.videoId }</h1>
+                <h1>{ this.state.videoName }</h1>
             </div>
         )
     }

@@ -50,8 +50,8 @@ class Public extends Component {
         {this.state.videos.map(
         (video)=>
                 <Card style={{ width: '15rem' }} key={video.id}>
-                    <NavLink to={`/player/${video.id}`}>
-                    <Card.Img variant="top" src="https://wallpapercave.com/wp/wp10269891.jpg" />
+                    <NavLink to={`/player/${video.id}/${video.title}`}>
+                    <Card.Img variant="top" src={"data:image/png;base64," + video.thumbnail} />
                     <Card.Body>
                         <Card.Title>{video.title}
                         </Card.Title>

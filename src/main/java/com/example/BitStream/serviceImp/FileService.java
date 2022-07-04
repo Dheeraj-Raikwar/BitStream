@@ -33,8 +33,6 @@ public class FileService {
 
 	@Value("${upload.path}")
 	private String uploadPath;
-	
-	private final static Logger log = LoggerFactory.getLogger(FileService.class);
 
 	@PostConstruct
 	public void init() {
@@ -70,7 +68,6 @@ public class FileService {
 			/* Generate thumb-nail for video */
 			if (issafe) {
 				Path path = Paths.get(uploadPath).resolve(filename);
-				log.info(path.toString());
 				FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(uploadPath +"\\" +filename + extension);
 
 				try {

@@ -52,6 +52,7 @@ import com.example.BitStream.service.UploadListService;
 import com.example.BitStream.service.UserListService;
 import com.example.BitStream.service.VideoService;
 import com.example.BitStream.serviceImp.FileService;
+import com.example.BitStream.models.VideoFileDto;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -121,26 +122,37 @@ public class UserController {
     	    
     
     @GetMapping("/all")
-    public ResponseEntity<List<Video>> getListFiles() {
+    public ResponseEntity<List<VideoFileDto>> getListFiles() {
         List<FileData> fileInfos = fileService.loadAll()
                                               .stream()
                                               .map(this::pathToFileData)
                                               .collect(Collectors.toList());
         
-        List<Video> videolist = new ArrayList<Video>();
+        List<VideoFileDto> videolist = new ArrayList<VideoFileDto>();
         
         try {
         	
-        for(FileData file:fileInfos) {        	
+        for(FileData file:fileInfos) {
+        	
         	String original = file.getFilename();
             int end = original.lastIndexOf(".");
             String name = original.substring(0,end);
+            String ext = original.substring(end);
+            
+            if(ext.equals(".mp4")) {
+            Resource rf =fileService.load(name+".png");
+            byte[] arr =IOUtils.toByteArray(rf.getInputStream());
+            String thumbnail = Base64
+    		          .getEncoder()
+    		          .encodeToString(arr);
         	
         	Optional<Video> video  = videoService.findById(Long.parseLong(name)); //name in storage is id in Db
 			video.ifPresent(videos -> {
-				videolist.add(videos);    
+				videolist.add(new VideoFileDto(videos.getId(),videos.getTitle(),videos.getCategory(),videos.getFilename(),
+						file.getSize(),thumbnail));
 			});
     
+        }
         }
         
         } catch (Exception e) {
@@ -155,27 +167,36 @@ public class UserController {
     
     @GetMapping("/user/mylist")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<List<Video>> getListFiles(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<List<VideoFileDto>> getListFiles(@AuthenticationPrincipal UserDetailsImpl user) {
     	
     	List<Video> videolist = videoService.findbyuser(user.getId());
     	
-    	List<FileData> fileInfos = new ArrayList<FileData>();
+    	List<VideoFileDto> vfdto = new ArrayList<VideoFileDto>();;
     	
     	 try {
     	
-    	for(Video videos:videolist) {   		
+    	for(Video videos:videolist) {
+    		
+    		Resource rf =fileService.load(videos.getId()+".png");
+            byte[] arr =IOUtils.toByteArray(rf.getInputStream());
+            String thumbnail = Base64
+    		          .getEncoder()
+    		          .encodeToString(arr);
+    		
     		Path path = Paths.get(uploadPath)
                     .resolve(Long.toString(videos.getId())+".mp4");
-    		fileInfos.add(pathToFileData(path));
+    		FileData fd =pathToFileData(path);
+    		vfdto.add(new  VideoFileDto(videos.getId(),videos.getTitle(),videos.getCategory(),videos.getFilename(),
+    				fd.getSize(),thumbnail));
     	}
         
     	 } catch (Exception e) {
              return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                     .body(videolist);
+                     .body(vfdto);
     	 }
     	 
         return ResponseEntity.status(HttpStatus.OK)
-                             .body(videolist);
+                             .body(vfdto);
     }
 
     @DeleteMapping("/user/delete")

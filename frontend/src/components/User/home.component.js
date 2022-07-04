@@ -62,7 +62,7 @@ export default class Home extends Component {
             <Switch>
                         
                         <Route path="/all" component={Public}/>                      
-                        <Route path="/player/:id" component={player}/>                        
+                        <Route path="/player/:id/:name" component={player}/>                        
              </Switch>
                             
               </div>

@@ -21,7 +21,7 @@ They can also see list of all videos.
 
 | Upload | User List | User Playback |
 | :---         |     :---:      |          ---: |
-| img src="https://i.ibb.co/RBmWT5f/Upload-1.png" />   | <img src="https://i.ibb.co/DMgTBPj/UserList.png" />   | <img src="https://i.ibb.co/dKcz24X/User-Playback.png" />   |
+| <img src="https://i.ibb.co/RBmWT5f/Upload-1.png" />   | <img src="https://i.ibb.co/DMgTBPj/UserList.png" />   | <img src="https://i.ibb.co/dKcz24X/User-Playback.png" />   |
 
 
 

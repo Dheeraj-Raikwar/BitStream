@@ -101,8 +101,8 @@ const UploadFile = () => {
             <option value="Movie">Movie</option>
             <option value="Music">Music</option>
             <option value="Game">Game</option>
+            <option value="Funny">Funny</option>
             <option value="Tutorial">Tutorial</option>
-            <option value="Life Hacks">Life Hacks</option>
             <option value="Other">Other</option>
         </Form.Select>
         </Col>

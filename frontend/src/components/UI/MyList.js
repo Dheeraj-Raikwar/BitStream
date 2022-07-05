@@ -1,5 +1,5 @@
 import React,{ Component,useRef, useState, } from "react";
-import {Card, CardGroup} from 'react-bootstrap';
+import {Card, CardGroup, Container, Row, Col } from 'react-bootstrap';
 import { Redirect, NavLink} from "react-router-dom";
 import axios from 'axios';
 import AuthHeader from "../../services/auth-header";
@@ -54,11 +54,12 @@ class MyList extends Component {
         return( <div>
 
             
-            <CardGroup>
+            
 
-
+        <Row xs={1} md={4} className="g-4">
         {this.state.videos.map(
         (video)=>
+                <Col xs={3}>
                 <Card style={{ width: '15rem' }} key={video.id}>
                     <NavLink to={`/player/${video.id}/${video.title}`}>
                     <Card.Img variant="top" src={"data:image/png;base64," + video.thumbnail} />
@@ -73,10 +74,9 @@ class MyList extends Component {
                     </Card.Footer>
                     </NavLink>
                  </Card>
+                 </Col>
             )}
-            
-            </CardGroup>
-
+            </Row>
             </div>
             )
         

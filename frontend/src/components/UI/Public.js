@@ -46,16 +46,15 @@ class Public extends Component {
         
         <Row xs={1} md={4} className="g-4">
         {this.state.videos.map(
-        (video)=>
-       
+        (video)=>       
                 <Col xs={3}>
-                <Card style={{ width: '15rem' }} key={video.id}>
+                <Card style={{ "width": '15rem' }} key={video.id}>
                     <NavLink to={`/player/${video.id}/${video.title}`}>
                     <Card.Img variant="top" src={"data:image/png;base64," + video.thumbnail} />
                     <Card.Body>
                         <Card.Title>{video.title}
                         </Card.Title>
-                        <Card.Text style={{width: '15rem'}, {overflow: 'hidden'}}>{video.category}
+                        <Card.Text style={{"width": '15rem', "overflow": 'hidden'}}>{video.category}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>

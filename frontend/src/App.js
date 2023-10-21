@@ -10,7 +10,7 @@ import Register from "./components/User/register.component";
 import Home from "./components/User/home.component";
 import Profile from "./components/User/profile.component";
 import BoardUser from "./components/User/board-user.component";
-import BoardModerator from "./components/User/board-moderator.component";
+// import BoardModerator from "./components/User/board-moderator.component";
 import BoardAdmin from "./components/User/board-admin.component";
 
 // import AuthVerify from "./common/auth-verify";
@@ -135,7 +135,7 @@ class App extends Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/profile" component={Profile} />
             <Route path="/user" component={BoardUser} />
-            <Route path="/mod" component={BoardModerator} />
+            {/* <Route path="/mod" component={BoardModerator} /> */}
             <Route path="/admin" component={BoardAdmin} />
           </Switch>
         </div>

@@ -156,6 +156,7 @@ public class UserController {
         }
         
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                                  .body(videolist);
         }

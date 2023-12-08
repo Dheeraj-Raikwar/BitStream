@@ -2,148 +2,147 @@ import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
 import AuthService from "./services/auth.service";
 
 import Login from "./components/User/login.component";
 import Register from "./components/User/register.component";
 import Home from "./components/User/home.component";
-import Profile from "./components/User/profile.component";
-import BoardUser from "./components/User/board-user.component";
+import Profile from "./components/User/Profile";
+import BoardUser from "./components/User/BoardUser";
 // import BoardModerator from "./components/User/board-moderator.component";
 import BoardAdmin from "./components/User/board-admin.component";
+import Error from "./components/UI/Error";
 
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
+import { useState, useEffect } from 'react';
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
+const { Header, Content, Footer } = Layout;
+const App = () => {
+  const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [currentUser, setCurrentUser] = useState(undefined);
+  var menuItems = [
+    {
+      key: '1',
+      label: 'Bitstream',
+      path: '/',
+    },
+    {
+      key: '2',
+      label: 'Home',
+      path: '/home',
+    },
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.logOut = this.logOut.bind(this);
+    showAdminBoard && {
+      key: '3',
+      label: 'Admin Board',
+      path: '/admin',
+    },
 
-    this.state = {
-      showModeratorBoard: false,
-      showAdminBoard: false,
-      currentUser: undefined,
-    };
-  }
+    currentUser && {
+      key: '4',
+      label: 'User',
+      path: '/user',
+    },
 
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
+    ...(currentUser
+      ? [
+        {
+          key: '5',
+          label: currentUser.username,
+          path: '/profile',
+        },
+        {
+          key: '6',
+          label: 'LogOut',
+          path: '/login',
+        },
+      ]
+      : [
+        {
+          key: '7',
+          label: 'Login',
+          path: '/login',
+        },
+        {
+          key: '8',
+          label: 'Sign Up',
+          path: '/register',
+        },
+      ]),
 
-    if (user) {
-      this.setState({
-        currentUser: user,
-        showModeratorBoard: user.roles.includes("ROLE_MODERATOR"),
-        showAdminBoard: user.roles.includes("ROLE_ADMIN"),
-      });
-    }
-    
-    EventBus.on("logout", () => {
-      this.logOut();
-    });
-  }
+  ].filter(Boolean);
 
-  componentWillUnmount() {
-    EventBus.remove("logout");
-  }
-
-  logOut() {
+  const logOut = () => {
     AuthService.logout();
-    this.setState({
-      showModeratorBoard: false,
-      showAdminBoard: false,
-      currentUser: undefined,
-    });
-  }
+    setShowAdminBoard(false);
+    setCurrentUser(undefined);
+  };
 
-  render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+    }
 
-    return (
+    const handleLogout = () => {
+      logOut();
+    };
+
+    EventBus.on('logout', handleLogout);
+
+    return () => {
+      EventBus.remove('logout', handleLogout);
+    };
+  }, []); // Empty dependency array to mimic componentDidMount
+
+  return (
+    <div>
       <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            Bitstream
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-
-            {showModeratorBoard && (
-              <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-            )}
-
-            {showAdminBoard && (
-              <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
-            )}
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>
-            )}
+        <Layout className="layout">
+          <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
+          <div className="demo-logo"></div>
+            {/* <Link to="/">
+              <div className="demo-logo" style={{ width: '50px', height: '50px', background: 'url(https://img.freepik.com/free-vector/colorful-bird-illustration-gradient_343694-1741.jpg?w=740&t=st=1701947726~exp=1701948326~hmac=60636e74737582b51f7585925cd63988c5e8f6117a169a5060c182e9c8d9615f.png) no-repeat', backgroundSize: 'cover' }} />
+            </Link> */}
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={["1"]}
+              items={menuItems.map(item => ({
+                key: item.key,
+                label: item.key === '6' ? (
+                  <a key={item.key} onClick={logOut}>
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link key={item.key} to={item.path}>
+                    {item.label}
+                  </Link>
+                ),
+              }))}
+              className="custom-menu"
+            />
+          </Header>
+          <div>
+            <Switch>
+              <Route exact path={["/", "/home/"]} component={Home} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/profile" component={Profile} />
+              <Route path="/user" component={BoardUser} />
+              <Route path="/admin" component={BoardAdmin} />
+              <Route path="/error" component={Error} />
+            </Switch>
           </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}'s Profile
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
-          )}
-        </nav>
-
-        <div className="container mt-3">
-          <Switch>
-            <Route exact path={["/", "/home/"]} component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/profile" component={Profile} />
-            <Route path="/user" component={BoardUser} />
-            {/* <Route path="/mod" component={BoardModerator} /> */}
-            <Route path="/admin" component={BoardAdmin} />
-          </Switch>
-        </div>
-
-        { /*<AuthVerify logOut={this.logOut}/> */ }
+          <Footer style={{ textAlign: "center" }}>
+            Bitstream Design ©2024 Created by &
+          </Footer>
+        </Layout>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;

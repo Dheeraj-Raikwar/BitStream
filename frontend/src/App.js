@@ -12,7 +12,7 @@ import BoardUser from "./components/User/BoardUser";
 // import BoardModerator from "./components/User/board-moderator.component";
 import BoardAdmin from "./components/User/board-admin.component";
 import Error from "./components/UI/Error";
-
+import { useHistory } from 'react-router-dom'; // Import useHistory
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
 import { useState, useEffect } from 'react';
@@ -73,8 +73,9 @@ const App = () => {
 
   ].filter(Boolean);
 
+  const history = useHistory();
   const logOut = () => {
-    AuthService.logout();
+    AuthService.logout(history);
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };

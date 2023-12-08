@@ -66,7 +66,7 @@ class MyList extends Component {
                     <Card.Body>
                         <Card.Title>{video.title}
                         </Card.Title>
-                        <Card.Text style={{width: '15rem'}, {overflow: 'hidden'}}>{video.category}
+                        <Card.Text style={{width: '15rem', overflow: 'hidden'}}>{video.category}
                         </Card.Text>
                     </Card.Body>
                     <Card.Footer>

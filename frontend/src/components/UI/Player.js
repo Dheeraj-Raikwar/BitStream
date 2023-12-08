@@ -39,11 +39,18 @@ export default class Player extends Component {
     render() {
         return (
             <div>
-                <div style={{ width: 660, height: 'auto' }}>
+                <div>
                     <Ratio aspectRatio="16x9">
                     <video controls muted autoPlay
-                    src={"data:video/mp4;base64," + this.state.videoData}/>
-                    
+                    src={"data:video/mp4;base64," + this.state.videoData}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'block',  // Add this style to ensure it behaves as a block-level element
+                        margin: '0',       // Reset margin to ensure there's no unexpected spacing
+                        padding: '0',      // Reset padding
+                      }}
+                    />
                     </Ratio>
                 </div>
                 <h1>{ this.state.videoName }</h1>

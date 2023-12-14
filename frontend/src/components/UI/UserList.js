@@ -10,7 +10,6 @@ function UserList() {
                 <li><NavLink to="/upload">Upload Video</NavLink></li>
                 <li><NavLink to="/getById">Searched Item</NavLink></li>              
                 <li><NavLink to="/myList">My List</NavLink></li>
-                
             </ul>
         </div>
     )

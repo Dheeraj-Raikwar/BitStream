@@ -1,6 +1,11 @@
 label {
   display: block;
   margin-top: 10px;
+  margin-bottom: 4px;
+}
+input.error:hover {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 0.01rem #ff4d4f;
 }
 
 .card-container.card {
@@ -30,7 +35,13 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
-
+/* custom ant css style */
 .custom-menu .ant-menu-item a {
   text-decoration: none;
+}
+
+.ant-message-custom-content.ant-message-error{
+  display: flex;
+  align-items: baseline;
+  margin-bottom: -5px;
 }

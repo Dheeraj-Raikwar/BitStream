@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import AuthService from "./services/auth.service";
-
 import Login from "./components/User/login.component";
 import Register from "./components/User/register.component";
-import Home from "./components/User/home.component";
+import Home from "./components/User/Home";
 import Profile from "./components/User/Profile";
 import BoardUser from "./components/User/BoardUser";
 // import BoardModerator from "./components/User/board-moderator.component";
@@ -17,16 +16,43 @@ import { useHistory } from 'react-router-dom'; // Import useHistory
 import EventBus from "./common/EventBus";
 import { useState, useEffect } from 'react';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+
 const { Header, Content, Footer } = Layout;
 const App = () => {
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
+  // Retrieve the last selected menu item from localStorage
+  const storedSelectedItem = localStorage.getItem('selectedMenuItem');
+  // Initialize state with the stored value or the default value
+  const [currentSelectedItem, setCurrentSelectedItem] = useState(storedSelectedItem || '2');
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+    if (user) {
+      setCurrentUser(user);
+      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+    }
+
+    const handleLogout = () => {
+      logOut();
+    };
+
+    EventBus.on('logout', handleLogout);
+
+    localStorage.setItem('selectedMenuItem', currentSelectedItem);
+
+    return () => {
+      EventBus.remove('logout', handleLogout);
+    };
+
+  }, [currentSelectedItem]); // Empty dependency array to mimic componentDidMount
+
   var menuItems = [
-    {
-      key: '1',
-      label: 'Bitstream',
-      path: '/',
-    },
+    // {
+    //   key: '1',
+    //   label: 'Bitstream',
+    //   path: '/',
+    // },
     {
       key: '2',
       label: 'Home',
@@ -49,12 +75,12 @@ const App = () => {
       ? [
         {
           key: '5',
-          label: currentUser.username,
+          label: 'Profile',
           path: '/profile',
         },
         {
           key: '6',
-          label: 'LogOut',
+          label: 'Logout',
           path: '/login',
         },
       ]
@@ -80,24 +106,6 @@ const App = () => {
     setCurrentUser(undefined);
   };
 
-  useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      setCurrentUser(user);
-      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
-    }
-
-    const handleLogout = () => {
-      logOut();
-    };
-
-    EventBus.on('logout', handleLogout);
-
-    return () => {
-      EventBus.remove('logout', handleLogout);
-    };
-  }, []); // Empty dependency array to mimic componentDidMount
-
   return (
     <div>
       <div>
@@ -110,7 +118,8 @@ const App = () => {
             <Menu
               theme="dark"
               mode="horizontal"
-              defaultSelectedKeys={["1"]}
+              defaultSelectedKeys={[currentSelectedItem]}
+              onClick={({ key }) => setCurrentSelectedItem(key)}
               items={menuItems.map(item => ({
                 key: item.key,
                 label: item.key === '6' ? (
@@ -138,7 +147,7 @@ const App = () => {
             </Switch>
           </div>
           <Footer style={{ textAlign: "center" }}>
-            Bitstream Design ©2024 Created by &
+           Design ©2024 Created by &
           </Footer>
         </Layout>
       </div>

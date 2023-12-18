@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, HashRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Form, Row, Col } from 'react-bootstrap';
 import { Select } from 'antd';
 
@@ -13,7 +13,9 @@ import myList from "../UI/UploadList";
 import player from "../UI/Player";
 import UploadList from "../UI/UploadList";
 
-import { Button, Modal, message, Spac } from 'antd';
+import { Button, Modal, message, Spac, Input } from 'antd';
+
+const { TextArea } = Input;
 
 const BoardUser = ({ history }) => {
   const [content, setContent] = useState("");
@@ -23,6 +25,15 @@ const BoardUser = ({ history }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [error, setError] = useState([]);
   const [successMessage, setSuccessMessage] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  let api_token;
+  if (user && user.accessToken) {
+    api_token = user.accessToken;
+  } else {
+    api_token = "";
+
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,16 +58,71 @@ const BoardUser = ({ history }) => {
 
   }, [history]);
 
+  // Method to upload file
   const handleOk = () => {
     setConfirmLoading(true);
-    setTimeout(() => {
-      setOpen(false);
+    var errors = [];
+
+    if (!videoData?.title) {
+      errors.push('Please enter video title.');
+      document.getElementById('title').classList.add('error');
+    }
+    if (!videoData?.category) {
+      errors.push(' Please enter video category.');
+      document.getElementsByClassName('ant-select')[0].classList.add('error');
+    }
+    if (!videoData?.file) {
+      errors.push(' Please select video file.');
+      document.getElementById('selectBox').classList.add('error');
+    }
+
+    if (errors) {
+      console.log(errors)
+      openMessage('warning', errors);
       setConfirmLoading(false);
-    }, 2000);
+    }
+
+    else {
+      const formData = new FormData();
+      formData.append('title', videoData.title);
+      formData.append('category', videoData.category);
+      formData.append('file', videoData.file);
+      const FILE_UPLOAD_BASE_ENDPOINT = "http://localhost:8080/api/rest/user/upload";
+      const requestOptions = {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + api_token },
+        body: formData
+      };
+      fetch(FILE_UPLOAD_BASE_ENDPOINT, requestOptions)
+        .then(async response => {
+          const isJson = response.headers.get('content-type')?.includes('application/json');
+          const data = isJson && await response.json();
+          // check for error response
+          if (!response.ok) {
+            // get error message
+            const error = (data && data.responseMessage) || response.status;
+            // setFileUploadResponse(data.responseMessage);
+            openMessage('error', 'Unable to process the request, try again later.');
+            return Promise.reject(error);
+          }
+          console.log(data.responseMessage);
+          // setFileUploadResponse(data.responseMessage);
+          openMessage('success', data.responseMessage);
+        })
+        .catch(error => {
+          openMessage('error', 'Failed to fetch, contact to admin.');
+        }).finally(() => {
+          setConfirmLoading(false);
+          setOpen(false);
+        });
+    }
   };
 
   const handleCancel = () => {
     document.getElementById('file').value = '';
+    document.getElementById('title').classList.remove('error');
+    document.getElementsByClassName('ant-select')[0].classList.remove('error');
+    document.getElementById('selectBox').classList.remove('error');
     setOpen(false);
   };
 
@@ -66,9 +132,9 @@ const BoardUser = ({ history }) => {
     if (!options) {
       let id = e.target.id;
       let value = e.target.value;
-      
+
       if (e.target.id === "file" && e.target.files) {
-        let inputElement = document.getElementById('select-btn');
+        let inputElement = document.getElementById('selectBox');
         e.persist();
         let file = e.target.files[0];
         if (file.size > 1024 * 1024 * 1024) {
@@ -107,9 +173,9 @@ const BoardUser = ({ history }) => {
       const inputElement = document.getElementById('category');
       const elementValue = inputElement.value.trim();
       if (elementValue === '') {
-        inputElement.classList.add('error');
+        document.getElementsByClassName('ant-select')[0].classList.add('error');
       } else {
-        inputElement.classList.remove('error');
+        document.getElementsByClassName('ant-select')[0].classList.remove('error');
       }
       setVideoData({
         ...videoData,
@@ -127,14 +193,13 @@ const BoardUser = ({ history }) => {
     </div>
   );
 
-  const openMessage = (type, content, duration = 100) => {
+  const openMessage = (type, content) => {
     const key = `custom_message_${Date.now()}`;
-
     message.open({
       key,
       type: type,
       content: <CustomMessageContent content={content} onClose={() => message.destroy(key)} />,
-      duration,
+      duration: 3,
       onClose: () => message.destroy(key),
     });
   };
@@ -144,7 +209,7 @@ const BoardUser = ({ history }) => {
       {contextHolder}
       <div className="col-12 pt-3 mb-3">
         <div className="container">
-          <HashRouter>
+          <BrowserRouter>
             <Button type="primary" onClick={() => { setOpen(true); setVideoData(); }}>Upload</Button>
             <div className="content">
               <Switch>
@@ -154,7 +219,7 @@ const BoardUser = ({ history }) => {
                 <Route path="/player/:id/:name" component={player} />
               </Switch>
             </div>
-          </HashRouter>
+          </BrowserRouter>
         </div>
       </div>
 
@@ -171,13 +236,13 @@ const BoardUser = ({ history }) => {
           <div className="row">
             <div className="form-group">
               <div className="col-md-12 pl-10">
-                <label>Title</label>
+                <label>Title<span className="text-danger">*</span></label>
                 <input type='text' className="form-control" autoComplete='off' value={videoData?.title || ""}
                   id='title' onChange={(e) => { handleAll(e) }}>
                 </input>
               </div>
               <div className="col-md-6 pl-10">
-                <label>Category</label>
+                <label>Category<span className="text-danger">*</span></label>
                 <Select className="form-control" id='category' onChange={(value, options) => { handleAll(value, options); }} value={videoData?.category || ""}
                   bordered={false} placement={'bottomLeft'}
                   options={[
@@ -215,19 +280,18 @@ const BoardUser = ({ history }) => {
               </div>
 
               <div className="col-md-12">
-              <label>Choose File</label>
+                <label>Choose File<span className="text-danger">*</span></label>
                 <div className="form-group d-flex justify-content-start align-items-end">
                   <span hidden>
                     <input type="file" accept="video/mp4,video/mkv, video/x-m4v,video/*" onChange={(e) => { handleAll(e); }} id="file" name="file" />
                   </span>
-                  <div className="form-control w-50 d-flex flex-column">
-                    <label htmlFor="file" className="btn btn-primary" id="select-btn">Select</label>
+                  <div className="form-control w-50 d-flex flex-column" id="selectBox">
+                    <label htmlFor="file" className="btn btn-primary">Select</label>
                     <span className='mx-2'>(.mp4, .mkv, .m4v)</span>
                   </div>
-                  {videoData?.file && <span>{videoData?.file.name}</span>}
+                  {videoData?.file && <TextArea value={(videoData?.file.name).length < 69 ? videoData?.file.name : (videoData?.file.name).substring(0,65).concat('...')} disabled/>}
                 </div>
               </div>
-
             </div>
           </div>
         </Modal>

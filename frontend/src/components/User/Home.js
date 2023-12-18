@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { HashRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import player from "../UI/Player";
 import HomeList from "../UI/HomeList";
-
+import { NavLink } from "react-router-dom";
+import { Row, Col, Card } from 'antd';
+import InfiniteScroll from 'react-infinite-scroll-component';
+const { Meta } = Card;
 const baseURL = "http://localhost:8080/api/rest/all";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
-  const [content, setContent] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,16 +36,30 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="col-12 mb-15">
+    <div className="col-12 pt-4 mb-15">
       <div className="container">
-        <HashRouter>
-          <HomeList videos={videos} />
+        <BrowserRouter>
           <div className="content">
             <Switch>
               <Route path="/player/:id/:name" component={player} />
             </Switch>
           </div>
-        </HashRouter>
+          <Row gutter={[16, 16]}>
+            {videos.map((video) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={video.id}>
+                <NavLink to={`/player/${video.id}/${video.title}`}>
+                  <Card
+                    hoverable
+                    style={{ width: 240 }}
+                    cover={<img alt="example" src={"data:image/png;base64," + video.thumbnail} />}
+                  >
+                    <Meta title={video.title} description={video.category} />
+                  </Card>
+                </NavLink>
+              </Col>
+            ))}
+          </Row>
+        </BrowserRouter>
       </div>
     </div>
   );

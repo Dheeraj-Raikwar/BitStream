@@ -147,7 +147,7 @@ const App = () => {
             </Switch>
           </div>
           <Footer style={{ textAlign: "center" }}>
-           Design ©2024 Created by &
+           Ant Design ©2024 Created by &
           </Footer>
         </Layout>
       </div>

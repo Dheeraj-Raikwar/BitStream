@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
 import AuthService from "./services/AuthService";
 import Login from "./components/User/Login";
-import Register from "./components/User/register.component";
+import Register from "./components/User/Register";
 import Home from "./components/User/Home";
 import Profile from "./components/User/Profile";
-import BoardUser from "./components/User/BoardUser";
+import BoardUser from "./components/User/User";
 // import BoardModerator from "./components/User/board-moderator.component";
-import BoardAdmin from "./components/User/board-admin.component";
+import BoardAdmin from "./components/User/Admin";
 import Error from "./components/UI/Error";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate 
 // import AuthVerify from "./common/auth-verify";

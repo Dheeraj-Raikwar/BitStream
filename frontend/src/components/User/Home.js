@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import player from "../UI/Player";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Player from "../UI/Player";
 import HomeList from "../UI/HomeList";
 import { NavLink } from "react-router-dom";
 import { Row, Col, Card } from 'antd';
@@ -38,11 +38,10 @@ const Home = () => {
   return (
     <div className="col-12 pt-4 mb-15">
       <div className="container">
-        <BrowserRouter>
           <div className="content">
-            <Switch>
-              <Route path="/player/:id/:name" component={player} />
-            </Switch>
+            <Routes>
+              <Route path="/player/:id/:name" element={<Player />}/>
+            </Routes>
           </div>
           <Row gutter={[16, 16]}>
             {videos.map((video) => (
@@ -59,7 +58,6 @@ const Home = () => {
               </Col>
             ))}
           </Row>
-        </BrowserRouter>
       </div>
     </div>
   );

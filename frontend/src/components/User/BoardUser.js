@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Form, Row, Col } from 'react-bootstrap';
 import { Select } from 'antd';
 
-import UserService from "../../services/user.service";
+import UserService from "../../services/UserService";
 import EventBus from "../../common/EventBus";
 import UserList from "../UI/UserList";
 
@@ -25,6 +25,7 @@ const BoardUser = ({ history }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [error, setError] = useState([]);
   const [successMessage, setSuccessMessage] = useState([]);
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem('user'));
   let api_token;
@@ -50,7 +51,7 @@ const BoardUser = ({ history }) => {
         setContent(errorMessage);
         if (error.response && error.response.status === 401) {
           EventBus.dispatch("logout");
-          history.push('/error');
+          navigate('/error');
         }
       }
     };
@@ -209,17 +210,15 @@ const BoardUser = ({ history }) => {
       {contextHolder}
       <div className="col-12 pt-3 mb-3">
         <div className="container">
-          <BrowserRouter>
-            <Button type="primary" onClick={() => { setOpen(true); setVideoData(); }}>Upload</Button>
-            <div className="content">
-              <Switch>
-                <Route path="/upload" component={uploadVideo} />
-                <Route path="/getById" component={getById} />
-                <Route path="/myList" component={myList} />
-                <Route path="/player/:id/:name" component={player} />
-              </Switch>
-            </div>
-          </BrowserRouter>
+          <Button type="primary" onClick={() => { setOpen(true); setVideoData(); }}>Upload</Button>
+          <div className="content">
+            <Routes>
+              <Route path="/upload" element={<uploadVideo />} />
+              <Route path="/getById" element={<getById />} />
+              <Route path="/myList" element={<myList />} />
+              <Route path="/player/:id/:name" element={<player />} />
+            </Routes>
+          </div>
         </div>
       </div>
 
@@ -289,7 +288,7 @@ const BoardUser = ({ history }) => {
                     <label htmlFor="file" className="btn btn-primary">Select</label>
                     <span className='mx-2'>(.mp4, .mkv, .m4v)</span>
                   </div>
-                  {videoData?.file && <TextArea value={(videoData?.file.name).length < 69 ? videoData?.file.name : (videoData?.file.name).substring(0,65).concat('...')} disabled/>}
+                  {videoData?.file && <TextArea value={(videoData?.file.name).length < 69 ? videoData?.file.name : (videoData?.file.name).substring(0, 65).concat('...')} disabled />}
                 </div>
               </div>
             </div>

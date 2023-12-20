@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
-import AuthService from "../../services/auth.service";
+import { Navigate  } from "react-router-dom";
+import AuthService from "../../services/AuthService";
 
 const Profile = () => {
   const [redirect, setRedirect] = useState(null);
   const [userReady, setUserReady] = useState(false);
   const [currentUser, setCurrentUser] = useState({ username: "" });
+  const authService = AuthService();
 
   useEffect(() => {
-      const user = AuthService.getCurrentUser();
+      const user = authService.getCurrentUser();
       if (!user) {
         setRedirect("/home");
       } else {
@@ -19,7 +20,7 @@ const Profile = () => {
   }, []);
 
   if (redirect) {
-    return <Redirect to={redirect} />;
+    return <Navigate to={redirect} />;
   }
 
   return (

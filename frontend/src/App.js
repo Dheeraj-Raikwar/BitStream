@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./App.css";
-import AuthService from "./services/auth.service";
-import Login from "./components/User/login.component";
+import AuthService from "./services/AuthService";
+import Login from "./components/User/Login";
 import Register from "./components/User/register.component";
 import Home from "./components/User/Home";
 import Profile from "./components/User/Profile";
@@ -11,7 +11,7 @@ import BoardUser from "./components/User/BoardUser";
 // import BoardModerator from "./components/User/board-moderator.component";
 import BoardAdmin from "./components/User/board-admin.component";
 import Error from "./components/UI/Error";
-import { useHistory } from 'react-router-dom'; // Import useHistory
+import { useNavigate } from 'react-router-dom'; // Import useNavigate 
 // import AuthVerify from "./common/auth-verify";
 import EventBus from "./common/EventBus";
 import { useState, useEffect } from 'react';
@@ -26,11 +26,17 @@ const App = () => {
   // Initialize state with the stored value or the default value
   const [currentSelectedItem, setCurrentSelectedItem] = useState(storedSelectedItem || '2');
 
+  const authService = AuthService();
   useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      setCurrentUser(user);
-      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+
+    try {
+      const user = authService.getCurrentUser();
+      if (user) {
+        setCurrentUser(user);
+        setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+      }
+    } catch (error) {
+      console.error('Login failed', error);
     }
 
     const handleLogout = () => {
@@ -99,9 +105,9 @@ const App = () => {
 
   ].filter(Boolean);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const logOut = () => {
-    AuthService.logout(history);
+    authService.logout();
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
@@ -111,7 +117,7 @@ const App = () => {
       <div>
         <Layout className="layout">
           <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
-          <div className="demo-logo"></div>
+            <div className="demo-logo"></div>
             {/* <Link to="/">
               <div className="demo-logo" style={{ width: '50px', height: '50px', background: 'url(https://img.freepik.com/free-vector/colorful-bird-illustration-gradient_343694-1741.jpg?w=740&t=st=1701947726~exp=1701948326~hmac=60636e74737582b51f7585925cd63988c5e8f6117a169a5060c182e9c8d9615f.png) no-repeat', backgroundSize: 'cover' }} />
             </Link> */}
@@ -136,18 +142,19 @@ const App = () => {
             />
           </Header>
           <div>
-            <Switch>
-              <Route exact path={["/", "/home/"]} component={Home} />
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/profile" component={Profile} />
-              <Route path="/user" component={BoardUser} />
-              <Route path="/admin" component={BoardAdmin} />
-              <Route path="/error" component={Error} />
-            </Switch>
+            <Routes>
+              <Route exact path="/*" element={<Home />} />
+              <Route exact path="/home/*" element={<Home />} />
+              <Route exact path="/login" element={<Login />} />
+              <Route exact path="/register" element={<Register />} />
+              <Route exact path="/profile" element={<Profile />} />
+              <Route path="/user/*" element={<BoardUser />} />
+              <Route path="/admin" element={<BoardAdmin />} />
+              <Route path="/error" element={<Error />} />
+            </Routes>
           </div>
           <Footer style={{ textAlign: "center" }}>
-           Ant Design ©2024 Created by &
+            Ant Design ©2024 Created by &
           </Footer>
         </Layout>
       </div>

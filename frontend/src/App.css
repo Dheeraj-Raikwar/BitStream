@@ -75,3 +75,8 @@ div.error {
   pointer-events: none;
   cursor: allowed;
 }
+
+/* Cutom fluid player style*/
+#player .ratio::before {
+    padding-top: unset;
+}

@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import AuthService from "../../services/AuthService";
 import { useNavigate } from 'react-router-dom';
+import { Card } from 'antd';
 
 const required = (value) => {
   if (!value) {
@@ -64,20 +65,22 @@ const Login = (props) => {
   let form;
 
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
-        <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-        />
+    <div className="col-md-12 d-flex justify-content-center">
 
+      <Card
+        hoverable
+        style={{
+          width: 240,
+        }}
+        cover={<img alt="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />}
+      >
         <Form
           onSubmit={handleLogin}
           ref={(c) => {
             form = c;
           }}
         >
+
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <Input
@@ -103,7 +106,7 @@ const Login = (props) => {
           </div>
 
           <div className="form-group">
-            <button className="btn btn-primary btn-block" disabled={loading}>
+            <button className="btn btn-primary btn-block mt-3" disabled={loading}>
               {loading && <span className="spinner-border spinner-border-sm"></span>}
               <span>Login</span>
             </button>
@@ -123,8 +126,8 @@ const Login = (props) => {
             }}
           />
         </Form>
-      </div>
-    </div>
+      </Card>
+    </div >
   );
 };
 

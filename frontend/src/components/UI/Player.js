@@ -8,66 +8,48 @@ const api_url = 'http://localhost:8080/api/rest/get';
 const Player = () => {
     const { id, name } = useParams();
     const [videoData, setVideoData] = useState();
-    let self = useRef(null);
-    let player = null;
+    const videoRef = useRef(null);
+    const [playerRef, setPlayerRef] = useState(null);
     useEffect(() => {
-        if (!player) {
-            player = fluidPlayer(self.current, {});
-        }
-
         const fetchData = async () => {
             try {
-                let res = await axios({
-                    url: api_url + '/' + id + '.mp4',
-                    method: 'get',
-                    timeout: 8000
-                });
-
-                if (res.status === 200) {
-                    let data = res.data;
-                    const CHUNK_SIZE = 1024; // Adjust the chunk size based on your requirements
-                    let binaryString = '';
-
-                    for (let i = 0; i < data.length; i += CHUNK_SIZE) {
-                        binaryString += atob(data.slice(i, i + CHUNK_SIZE));
-                    }
-
-                    const byteArray = new Uint8Array(binaryString.length);
-
-                    for (let i = 0; i < binaryString.length; i++) {
-                        byteArray[i] = binaryString.charCodeAt(i);
-                    }
-
-                    const videoBlob = new Blob([byteArray], { type: 'video/mp4' });
-                    const videoBlobUrl = URL.createObjectURL(videoBlob);
-                    setVideoData(videoBlobUrl);
+                const response = await fetch(`${api_url}/${id}.mp4`);
+                if (response.ok) {
+                    setVideoData(await response.blob());
                 }
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching video:', error);
             }
         };
-
         fetchData();
     }, [id, name]);
 
+    useEffect(() => {
+        if (videoRef.current && videoData) {
+            const videoUrl = URL.createObjectURL(videoData);
+            videoRef.current.src = videoUrl;
+            if (!playerRef) {
+                // Set playerRef to videoRef to indicate that the player is associated with this element
+                setPlayerRef(videoRef);
+                // Initialize fluidPlayer on the current videoRef
+                fluidPlayer(videoRef.current, {});
+            }
+        }
+    }, [videoData]);
+
     return (
-        <div>
+        <div id='player'>
             <div>
-                <Ratio aspectRatio="16x9">
-                    <video ref={self}>
-                        <source src={videoData}
-                            type='video/mp4'/>
-                    </video>
-                    {/* <video controls muted autoPlay
-                        src={videoData}
+                <Ratio>
+                    <video ref={videoRef} controls muted autoPlay
                         style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'block',
-                            margin: '0',
-                            padding: '0',
+                            height: '729px',
+                            width: '1296px'
                         }}
-                    /> */}
+                    >
+                        {/* Directly use <source> element */}
+                        <source type="video/mp4" />
+                    </video>
                 </Ratio>
             </div>
             <h1>{name}</h1>

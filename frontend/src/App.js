@@ -21,7 +21,7 @@ import { useLocation } from 'react-router-dom';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  GlobalOutlined,
+  HomeOutlined,
   FireOutlined,
   ToTopOutlined,
   FolderOutlined,
@@ -128,7 +128,7 @@ const App = () => {
     if (currentSelectedItem === '2') {
       setSidebarItems([{
         key: '1',
-        icon: <GlobalOutlined />,
+        icon: <HomeOutlined />,
         label: 'All Video',
         path: '/all'
       },
@@ -178,7 +178,7 @@ const App = () => {
     else {
       setSidebarItems([{
         key: '1',
-        icon: <GlobalOutlined />,
+        icon: <HomeOutlined />,
         label: 'All Video',
         path: '/all'
       }])

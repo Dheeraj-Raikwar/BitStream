@@ -20,9 +20,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -226,17 +228,21 @@ public class UserController {
 
     @GetMapping("/get/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<String> getFile(@PathVariable String filename) throws IOException {
-        Resource file = fileService.load(filename);
+    public ResponseEntity<InputStreamResource> getFile(@PathVariable String filename) throws IOException {
+        Resource videoResource = fileService.load(filename);
         
-        byte[] arr =IOUtils.toByteArray(file.getInputStream());
-        String encodedString = Base64
-		          .getEncoder()
-		          .encodeToString(arr);
-        
+     // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("inline", videoResource.getFilename());
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        // Stream the video content
+        InputStream inputStream = videoResource.getInputStream();
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
         return ResponseEntity.ok()
-                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                             .body(encodedString);
+                .headers(headers)
+                .body(inputStreamResource);
     }
     
     

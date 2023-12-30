@@ -1,53 +1,60 @@
-import React, { Component } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import AuthHeader from "../../services/auth-header";
-import {Ratio} from 'react-bootstrap';
-
+import { Ratio } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import fluidPlayer from 'fluid-player'
 const api_url = 'http://localhost:8080/api/rest/get';
 
-
-export default class Player extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            videoId: this.props.match.params.id,
-            videoName: this.props.match.params.name,
-            videoData: {}
+const Player = () => {
+    const { id, name } = useParams();
+    const [videoData, setVideoData] = useState();
+    const videoRef = useRef(null);
+    const [playerRef, setPlayerRef] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${api_url}/${id}.mp4`);
+                if (response.ok) {
+                    setVideoData(await response.blob());
+                }
+            } catch (error) {
+                console.error('Error fetching video:', error);
+            }
         };
-    }
-    async componentDidMount() {
-        try {
+        fetchData();
+    }, [id, name]);
 
-       let res = await axios({
-            url: api_url+'/'+ this.state.videoId +'.mp4',
-            method: 'get',
-            timeout: 8000
-        })
-
-        if(res.status === 200){
-            console.log("Inside Player");
-            let data=res.data;
-            this.setState({ videoData: data });
-
+    useEffect(() => {
+        if (videoRef.current && videoData) {
+            const videoUrl = URL.createObjectURL(videoData);
+            videoRef.current.src = videoUrl;
+            if (!playerRef) {
+                // Set playerRef to videoRef to indicate that the player is associated with this element
+                setPlayerRef(videoRef);
+                // Initialize fluidPlayer on the current videoRef
+                fluidPlayer(videoRef.current, {});
+            }
         }
-        
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    }, [videoData]);
 
-    render() {
-        return (
+    return (
+        <div id='player'>
             <div>
-                <div style={{ width: 660, height: 'auto' }}>
-                    <Ratio aspectRatio="16x9">
-                    <video controls muted autoPlay
-                    src={"data:video/mp4;base64," + this.state.videoData}/>
-                    
-                    </Ratio>
-                </div>
-                <h1>{ this.state.videoName }</h1>
+                <Ratio>
+                    <video ref={videoRef} controls muted autoPlay
+                        style={{
+                            height: '729px',
+                            width: '1296px'
+                        }}
+                    >
+                        {/* Directly use <source> element */}
+                        <source type="video/mp4" />
+                    </video>
+                </Ratio>
             </div>
-        )
-    }
-}
+            <h1>{name}</h1>
+        </div>
+    );
+};
+
+export default Player;

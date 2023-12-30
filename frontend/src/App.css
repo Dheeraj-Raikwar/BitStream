@@ -1,6 +1,33 @@
+@import "~fluid-player/src/css/fluidplayer.css";
+.mt-10 {
+  margin-top: 10px;
+}
 label {
   display: block;
   margin-top: 10px;
+  margin-bottom: 4px;
+}
+a {
+  text-decoration: none;
+}
+input.error:hover {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 0.01rem #ff4d4f;
+}
+
+input.error {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 0.01rem #ff4d4f;
+}
+
+div.error:hover {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 0.01rem #ff4d4f;
+}
+
+div.error {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 0.01rem #ff4d4f;
 }
 
 .card-container.card {
@@ -29,4 +56,27 @@ label {
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
+}
+/* custom ant css style */
+.custom-menu .ant-menu-item a {
+  text-decoration: none;
+}
+
+.ant-message-custom-content{
+  display: flex;
+  align-items: baseline;
+  margin-bottom: -5px;
+}
+
+.ant-input-disabled{
+  margin-left: 5px;
+  font-weight: 700;
+  background-color: rgb(220, 220, 220);
+  pointer-events: none;
+  cursor: allowed;
+}
+
+/* Cutom fluid player style*/
+#player .ratio::before {
+    padding-top: unset;
 }

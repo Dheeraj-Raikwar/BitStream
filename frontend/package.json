@@ -6,12 +6,19 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "antd": "^5.12.2",
+    "assert": "^2.1.0",
     "axios": "^1.5.1",
-    "bootstrap": "^4.6.1",
-    "react": "^16.13.0",
+    "bootstrap": "^5.3.2",
+    "buffer": "^6.0.3",
+    "fluid-player": "^3.29.0",
+    "jquery": "^3.7.1",
+    "nodemon": "^3.0.2",
+    "react": "^18.2.0",
     "react-bootstrap": "^2.4.0",
-    "react-dom": "^16.13.0",
-    "react-router-dom": "^5.1.2",
+    "react-dom": "^18.2.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-router-dom": "^6.21.0",
     "react-scripts": "^5.0.1",
     "react-validation": "^3.0.7",
     "validator": "^13.11.0"
@@ -36,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10"
   }
 }

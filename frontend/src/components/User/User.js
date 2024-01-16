@@ -5,7 +5,7 @@ import { Select } from 'antd';
 
 import UserService from "../../services/UserService";
 import EventBus from "../../common/EventBus";
-import UserList from "../UI/UserList";
+import UserList from "../UI/FavoriteList";
 
 import uploadVideo from "../UI/UploadFile";
 import getById from "../UI/GetById";
@@ -78,7 +78,6 @@ const BoardUser = ({ history }) => {
     }
 
     if (errors) {
-      console.log(errors)
       openMessage('warning', errors);
       setConfirmLoading(false);
     }
@@ -106,7 +105,6 @@ const BoardUser = ({ history }) => {
             openMessage('error', 'Unable to process the request, try again later.');
             return Promise.reject(error);
           }
-          console.log(data.responseMessage);
           // setFileUploadResponse(data.responseMessage);
           openMessage('success', data.responseMessage);
         })

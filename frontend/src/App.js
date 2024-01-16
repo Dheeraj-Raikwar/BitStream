@@ -28,6 +28,8 @@ import {
   StarOutlined,
   UserOutlined
 } from '@ant-design/icons';
+import UploadList from "./components/UI/UploadList";
+import FavouriteList from "./components/UI/FavoriteList";
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -40,8 +42,10 @@ const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
   // Retrieve the last selected menu item from localStorage
   const storedSelectedItem = localStorage.getItem('selectedMenuItem');
+  const storedSelectedSideBarItem = localStorage.getItem('selectedSideBarItem');
   // Initialize state with the stored value or the default value
   const [currentSelectedItem, setCurrentSelectedItem] = useState(storedSelectedItem || '2');
+  const [currentSelectedSideBarItem, setCurrentSelectedSideBarItem] = useState(storedSelectedSideBarItem || '1');
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -123,7 +127,7 @@ const App = () => {
     EventBus.on('logout', handleLogout);
 
     localStorage.setItem('selectedMenuItem', currentSelectedItem);
-    console.log(currentSelectedItem);
+    localStorage.setItem('selectedSideBarItem', currentSelectedSideBarItem);
 
     if (currentSelectedItem === '2') {
       setSidebarItems([{
@@ -188,7 +192,7 @@ const App = () => {
       EventBus.remove('logout', handleLogout);
     };
 
-  }, [currentSelectedItem]); // Empty dependency array to mimic componentDidMount
+  }, [currentSelectedItem, currentSelectedSideBarItem]); // Empty dependency array to mimic componentDidMount
 
 
   const logOut = () => {
@@ -196,8 +200,6 @@ const App = () => {
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
-
-  console.log(sidebarItems)
 
   return (
     <div>
@@ -232,14 +234,14 @@ const App = () => {
           </Header>
 
           {/* Ant design side bar*/}
-
           <Layout style={{ minHeight: '100vh' }}>
             <Sider trigger={null} collapsible collapsed={collapsed}>
               <div className="demo-logo-vertical" />
               <Menu
                 theme="dark"
                 mode="inline"
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={[currentSelectedSideBarItem]}
+                onClick={({ key }) => setCurrentSelectedSideBarItem(key)}
                 items={sidebarItems.map(item => ({
                   key: item.key,
                   icon: item.icon,
@@ -288,11 +290,12 @@ const App = () => {
                     <Route exact path="/register" element={<Register />} />
                     <Route exact path="/profile" element={<Profile />} />
                     <Route path="/user/*" element={<BoardUser />} />
+                    <Route path="/myvideos/*" element={<UploadList />} />
+                    <Route path="/favourite/*" element={<FavouriteList />} />
                     <Route path="/admin" element={<BoardAdmin />} />
                     <Route path="/error" element={<Error />} />
                   </Routes>
                 </div>
-
               </Content>
             </Layout>
 

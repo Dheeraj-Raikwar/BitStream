@@ -43,8 +43,8 @@ const Player = () => {
                 <Ratio>
                     <video ref={videoRef} controls muted autoPlay
                         style={{
-                            height: '729px',
-                            width: '1296px'
+                            height: '690px',
+                            width: '1226px'
                         }}
                     >
                         {/* Directly use <source> element */}

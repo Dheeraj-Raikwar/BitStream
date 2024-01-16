@@ -75,7 +75,6 @@ const UploadFile = () => {
                     return Promise.reject(error);
                 }
 
-                console.log(data.responseMessage);
                 setFileUploadResponse(data.responseMessage);
             })
             .catch(error => {

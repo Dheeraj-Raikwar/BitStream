@@ -29,7 +29,6 @@ function GetById(){
             headers: { Authorization: 'Bearer ' + api_token}
         })
         if(res.status === 200){
-            console.log("Inside Get By Id");
             data=res.data;
         }
     }

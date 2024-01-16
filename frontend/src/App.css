@@ -80,3 +80,8 @@ div.error {
 #player .ratio::before {
     padding-top: unset;
 }
+
+.search-input {
+  width: 200px;
+  margin-bottom: 10px;
+}

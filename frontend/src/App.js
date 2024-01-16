@@ -206,14 +206,16 @@ const App = () => {
       <div>
         <Layout>
           {/* Ant design header */}
-          <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}>
+          <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}
+          className="ant-layout-sider ant-layout-sider-light"
+          >
             <div className="demo-logo">
               <Link to="/">
                 <div className="demo-logo" style={{ width: '30px', height: '30px', background: `url(${process.env.PUBLIC_URL}/logo192.png) no-repeat`, backgroundSize: 'cover' }} />
               </Link>
             </div>
             <Menu
-              theme="dark"
+              theme="light"
               mode="horizontal"
               defaultSelectedKeys={[currentSelectedItem]}
               onClick={({ key }) => setCurrentSelectedItem(key)}
@@ -234,11 +236,13 @@ const App = () => {
           </Header>
 
           {/* Ant design side bar*/}
-          <Layout style={{ minHeight: '100vh' }}>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
+          <Layout style={{ minHeight: '100vh'}}>
+            <Sider trigger={null} collapsible collapsed={collapsed}
+            className="ant-layout-sider ant-layout-sider-light"
+            >
               <div className="demo-logo-vertical" />
               <Menu
-                theme="dark"
+                theme="light"
                 mode="inline"
                 defaultSelectedKeys={[currentSelectedSideBarItem]}
                 onClick={({ key }) => setCurrentSelectedSideBarItem(key)}
@@ -250,6 +254,7 @@ const App = () => {
                       {item.label}
                     </Link>
                 }))}
+                
               />
             </Sider>
 

@@ -17,6 +17,7 @@ import EventBus from "./common/EventBus";
 import { useState, useEffect } from 'react';
 import { Breadcrumb, Layout, Flex, Menu, theme, Button } from 'antd';
 import { useLocation } from 'react-router-dom';
+import { Input } from 'antd';
 
 import {
   MenuFoldOutlined,
@@ -30,6 +31,8 @@ import {
 } from '@ant-design/icons';
 import UploadList from "./components/UI/UploadList";
 import FavouriteList from "./components/UI/FavoriteList";
+
+const { Search } = Input;
 
 const { Header, Sider, Content, Footer } = Layout;
 
@@ -52,6 +55,8 @@ const App = () => {
   // check url path
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const onSearch = (value, _e, info) => console.log(info?.source, value); 
 
   var headerItems = [
     // {
@@ -214,6 +219,14 @@ const App = () => {
                 <div className="demo-logo" style={{ width: '30px', height: '30px', background: `url(${process.env.PUBLIC_URL}/logo192.png) no-repeat`, backgroundSize: 'cover' }} />
               </Link>
             </div>
+                  <Search
+                    placeholder="Search "
+                    allowClear
+                    enterButton="Search"
+                    size="large"
+                    onSearch={onSearch}
+                    className="w-50"
+                  />
             <Menu
               theme="light"
               mode="horizontal"

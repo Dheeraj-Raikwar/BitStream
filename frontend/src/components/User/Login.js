@@ -72,7 +72,7 @@ const Login = (props) => {
         style={{
           width: 240,
         }}
-        cover={<img alt="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />}
+        cover={<img alt="profile-img" src="https://i.ibb.co/9WCKGjS/1675231961-Adam.jpg" />}
       >
         <Form
           onSubmit={handleLogin}

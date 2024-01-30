@@ -79,7 +79,7 @@ const Register = () => {
     <div className="col-md-12">
       <div className="card card-container">
         <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+          src="https://i.ibb.co/9WCKGjS/1675231961-Adam.jpg"
           alt="profile-img"
           className="profile-img-card"
         />

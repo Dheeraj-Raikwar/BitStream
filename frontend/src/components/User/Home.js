@@ -24,6 +24,7 @@ const Home = () => {
 
         if (response.status === 200) {
           const data = response.data;
+          // const ddata = Array.from({ length: 10 }, (_, index) => data[index % data.length]);
           setVideos([...data]);
         }
       } catch (error) {
@@ -76,7 +77,7 @@ const Home = () => {
           )):
 
           videos.map((video) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={video.id}>
+            <Col xs={24} sm={12} md={8} lg={8} key={video.id}>
               <NavLink to={`/player/${video.id}/${video.title}`}>
                 <Card
                   hoverable

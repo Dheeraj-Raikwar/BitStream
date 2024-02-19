@@ -62,6 +62,12 @@ public class VideoServiceImpl implements VideoService{
 		}
 		return video_list;
 	}
+	
+	@Override
+	public Optional<String> searchIdsByTitle(String title) {
+		
+		return videoRepository.searchIdsByTitle(title);
+	}
 
 	@Override
 	public List<Video> filter(String category) {

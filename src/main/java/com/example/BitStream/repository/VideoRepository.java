@@ -28,5 +28,9 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 	@Transactional
 	@Query(value ="insert into video(id,title,category,filename) values(?1,?2,?3,?4)",nativeQuery=true)
 	void saveWithId(Long randomId,String title, String category, String filename);
+	
+	//Fetch Video by video_id
+	@Query(value ="select id from video where title ilike %?1%",nativeQuery=true) 
+	Optional<String> searchIdsByTitle(String s);
 
 }

@@ -56,7 +56,7 @@ const App = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const onSearch = (value, _e, info) => console.log(info?.source, value); 
+  const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   var headerItems = [
     // {
@@ -211,47 +211,50 @@ const App = () => {
       <div>
         <Layout>
           {/* Ant design header */}
-          <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}
-          className="ant-layout-sider ant-layout-sider-light"
-          >
-            <div className="demo-logo">
-              <Link to="/">
-                <div className="demo-logo" style={{ width: '30px', height: '30px', background: `url(${process.env.PUBLIC_URL}/logo192.png) no-repeat`, backgroundSize: 'cover' }} />
-              </Link>
-            </div>
-                  <Search
-                    placeholder="Search "
-                    allowClear
-                    enterButton="Search"
-                    size="large"
-                    onSearch={onSearch}
-                    className="w-50"
-                  />
-            <Menu
-              theme="light"
-              mode="horizontal"
-              defaultSelectedKeys={[currentSelectedItem]}
-              onClick={({ key }) => setCurrentSelectedItem(key)}
-              items={headerItems.map(item => ({
-                key: item.key,
-                label: item.key === '6' ? (
-                  <a key={item.key} onClick={logOut}>
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link key={item.key} to={item.path}>
-                    {item.label}
-                  </Link>
-                ),
-              }))}
-              className="custom-menu"
-            />
-          </Header>
+          <div className="header position-fixed w-100">
+            <Header style={{ display: "flex", justifyContent: 'space-between', alignItems: "center" }}
+              className="ant-layout-sider ant-layout-sider-light"
+            >
+
+              <div className="demo-logo">
+                <Link to="/">
+                  <div className="demo-logo" style={{ width: '30px', height: '30px', background: `url(${process.env.PUBLIC_URL}/logo192.png) no-repeat`, backgroundSize: 'cover' }} />
+                </Link>
+              </div>
+              <Search
+                placeholder="Search "
+                allowClear
+                enterButton="Search"
+                size="large"
+                onSearch={onSearch}
+                className="w-50"
+              />
+              <Menu
+                theme="light"
+                mode="horizontal"
+                defaultSelectedKeys={[currentSelectedItem]}
+                onClick={({ key }) => setCurrentSelectedItem(key)}
+                items={headerItems.map(item => ({
+                  key: item.key,
+                  label: item.key === '6' ? (
+                    <a key={item.key} onClick={logOut}>
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link key={item.key} to={item.path}>
+                      {item.label}
+                    </Link>
+                  ),
+                }))}
+                className="custom-menu"
+              />
+            </Header>
+          </div>
 
           {/* Ant design side bar*/}
-          <Layout style={{ minHeight: '100vh'}}>
+          <Layout style={{ minHeight: '100vh' }}>
             <Sider trigger={null} collapsible collapsed={collapsed}
-            className="ant-layout-sider ant-layout-sider-light"
+              className="ant-layout-sider ant-layout-sider-light"
             >
               <div className="demo-logo-vertical" />
               <Menu
@@ -267,7 +270,7 @@ const App = () => {
                       {item.label}
                     </Link>
                 }))}
-                
+
               />
             </Sider>
 

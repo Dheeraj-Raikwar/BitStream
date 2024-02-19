@@ -85,3 +85,7 @@ div.error {
   width: 200px;
   margin-bottom: 10px;
 }
+
+.ant-input-search.ant-input-search-large button, button:hover{
+  background-color: #ff4d4f !important;;
+}

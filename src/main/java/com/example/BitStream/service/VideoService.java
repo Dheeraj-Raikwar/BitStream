@@ -14,6 +14,8 @@ public interface VideoService {
     
     List<Video> findbyuser(Long id);
    
+    Optional<String> searchIdsByTitle(String title);
+    
     List<Video> filter(String category);
 
     void saveById(Video video, Long userId, Long randomId);

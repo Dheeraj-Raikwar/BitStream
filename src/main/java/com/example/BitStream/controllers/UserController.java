@@ -54,6 +54,7 @@ import com.example.BitStream.service.UploadListService;
 import com.example.BitStream.service.UserListService;
 import com.example.BitStream.service.VideoService;
 import com.example.BitStream.serviceImp.FileService;
+import com.example.BitStream.serviceImp.VideoServiceImpl;
 import com.example.BitStream.models.VideoFileDto;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -85,6 +86,7 @@ public class UserController {
         this.fileService = fileService;
     }
 
+    // User end point to upload a new video.    
     @PostMapping("/user/upload")
 	@PreAuthorize("hasRole('USER')")
     public ResponseEntity<UploadResponseMessage> uploadFile(@AuthenticationPrincipal UserDetailsImpl user, @RequestParam("file") MultipartFile file,
@@ -122,7 +124,7 @@ public class UserController {
     			
     	}
     	    
-    
+    // End point to get all videos
     @GetMapping("/all")
     public ResponseEntity<List<VideoFileDto>> getListFiles() {
         List<FileData> fileInfos = fileService.loadAll()
@@ -167,7 +169,66 @@ public class UserController {
                 .body(videolist);
     }
     
+    //editing starts here
     
+    // End point to searched videos
+    @GetMapping("/search")
+    public ResponseEntity<List<VideoFileDto>> getFilteredListFiles(@RequestParam String q) {
+    	
+    	Optional<String> filenames = videoService.searchIdsByTitle(q);
+    	
+    	if (filenames.isPresent()) {
+            String filenamesValue = filenames.get(); // Get the value from the Optional
+            log.info("Found filenames: {}", filenamesValue); // Log the value
+        } else {
+            log.info("No filenames found for the given query"); // Log a message indicating no value found
+        }
+    	
+        List<FileData> fileInfos = fileService.search(filenames)
+                                              .stream()
+                                              .map(this::pathToFileData)
+                                              .collect(Collectors.toList());
+        
+        List<VideoFileDto> videolist = new ArrayList<VideoFileDto>();
+        
+        try {
+        	
+        for(FileData file:fileInfos) {
+        	
+        	String original = file.getFilename();
+            int end = original.lastIndexOf(".");
+            String name = original.substring(0,end);
+            String ext = original.substring(end);
+            
+            if(ext.equals(".mp4")) {
+            Resource rf =fileService.load(name+".png");
+            byte[] arr =IOUtils.toByteArray(rf.getInputStream());
+            String thumbnail = Base64
+    		          .getEncoder()
+    		          .encodeToString(arr);
+        	
+        	Optional<Video> video  = videoService.findById(Long.parseLong(name)); //name in storage is id in Db
+			video.ifPresent(videos -> {
+				videolist.add(new VideoFileDto(videos.getId(),videos.getTitle(),videos.getCategory(),videos.getFilename(),
+						file.getSize(),thumbnail));
+			});
+    
+        }
+        }
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                                 .body(videolist);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(videolist);
+    }
+    
+//    editing ends here
+    
+    // User end point to get list of user's video.
     @GetMapping("/user/mylist")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<VideoFileDto>> getListFiles(@AuthenticationPrincipal UserDetailsImpl user) {
@@ -202,12 +263,14 @@ public class UserController {
                              .body(vfdto);
     }
 
+    // User end point to delete videos.
     @DeleteMapping("/user/delete")
     @PreAuthorize("hasRole('USER')")    
     public void delete() {
         fileService.deleteAll();
     }    
-
+    
+    // Method to get file data using file path    
     private FileData pathToFileData(Path path) {
         FileData fileData = new FileData();
         String filename = path.getFileName()
@@ -225,7 +288,8 @@ public class UserController {
 
         return fileData;
     }
-
+    
+    // End point to stream video using file name.
     @GetMapping("/get/{filename:.+}")
     @ResponseBody
     public ResponseEntity<InputStreamResource> getFile(@PathVariable String filename) throws IOException {

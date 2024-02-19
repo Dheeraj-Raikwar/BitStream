@@ -7,7 +7,6 @@ import UserService from "../../services/UserService";
 import EventBus from "../../common/EventBus";
 import UserList from "../UI/FavoriteList";
 
-import uploadVideo from "../UI/UploadFile";
 import getById from "../UI/GetById";
 import myList from "../UI/UploadList";
 import player from "../UI/Player";
@@ -77,7 +76,7 @@ const BoardUser = ({ history }) => {
       document.getElementById('selectBox').classList.add('error');
     }
 
-    if (errors) {
+    if (errors && errors.length > 0) {
       openMessage('warning', errors);
       setConfirmLoading(false);
     }

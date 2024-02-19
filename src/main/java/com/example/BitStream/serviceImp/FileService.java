@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,7 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.BitStream.controllers.UserController;
+import com.example.BitStream.repository.VideoRepository;
 
 @Service
 public class FileService {
@@ -128,6 +130,24 @@ public class FileService {
 			Path root = Paths.get(uploadPath);
 			if (Files.exists(root)) {
 				return Files.walk(root, 1).filter(path -> !path.equals(root)).collect(Collectors.toList());
+			}
+
+			return Collections.emptyList();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not list the files!");
+		}
+	}
+	
+	public List<Path> search(Optional<String> fn) {
+		
+		try {
+			
+			Path root = Paths.get(uploadPath);
+			if (Files.exists(root)) {
+				return Files.walk(root, 1)
+						.filter(path -> Files.isRegularFile(path)) // Filter only regular files
+						.filter(path -> fn.stream().anyMatch(fileName -> path.getFileName().toString().contains(fileName))) // Filter by file names in the list
+	                    .collect(Collectors.toList());
 			}
 
 			return Collections.emptyList();
